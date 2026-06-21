@@ -5,8 +5,8 @@ use Illuminate\Support\Facades\Route;
 
 // ============= GUEST ROUTES =============
 Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+    return redirect()->route('login');
+});
 
 // Auth routes (bawaan Breeze)
 require __DIR__.'/auth.php';
@@ -23,13 +23,9 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:developer'])->prefix('developer')->name('developer.')->group(function () {
         Route::get('/dashboard', [App\Http\Controllers\Developer\DashboardController::class, 'index'])->name('dashboard');
         
-        // Manajemen Mentor (CRUD lengkap)
         Route::resource('/mentors', App\Http\Controllers\Developer\MentorController::class);
-        
-        // Manajemen Kelompok (CRUD lengkap)
         Route::resource('/groups', App\Http\Controllers\Developer\GroupController::class);
         
-        // Manajemen Mahasiswa (CRUD LENGKAP dengan edit & update)
         Route::get('/students', [App\Http\Controllers\Developer\StudentController::class, 'index'])->name('students.index');
         Route::get('/students/create', [App\Http\Controllers\Developer\StudentController::class, 'create'])->name('students.create');
         Route::post('/students', [App\Http\Controllers\Developer\StudentController::class, 'store'])->name('students.store');
@@ -37,13 +33,8 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/students/{user}', [App\Http\Controllers\Developer\StudentController::class, 'update'])->name('students.update');
         Route::delete('/students/{user}', [App\Http\Controllers\Developer\StudentController::class, 'destroy'])->name('students.destroy');
         
-        // Manajemen Quest (CRUD lengkap)
         Route::resource('/quests', App\Http\Controllers\Developer\QuestController::class);
-        
-        // Manajemen CFT (CRUD lengkap)
         Route::resource('/cft', App\Http\Controllers\Developer\CftController::class);
-        
-        // Lihat semua pet
         Route::get('/pets', [App\Http\Controllers\Developer\PetController::class, 'index'])->name('pets.index');
     });
     
@@ -51,7 +42,6 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:mentor'])->prefix('mentor')->name('mentor.')->group(function () {
         Route::get('/dashboard', [App\Http\Controllers\Mentor\DashboardController::class, 'index'])->name('dashboard');
         
-        // Manajemen Mahasiswa (CRUD untuk kelompoknya sendiri)
         Route::get('/students', [App\Http\Controllers\Mentor\StudentController::class, 'index'])->name('students.index');
         Route::get('/students/create', [App\Http\Controllers\Mentor\StudentController::class, 'create'])->name('students.create');
         Route::post('/students', [App\Http\Controllers\Mentor\StudentController::class, 'store'])->name('students.store');
@@ -61,45 +51,69 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/students/{user}', [App\Http\Controllers\Mentor\StudentController::class, 'update'])->name('students.update');
         Route::delete('/students/{user}', [App\Http\Controllers\Mentor\StudentController::class, 'destroy'])->name('students.destroy');
         
-        // Progress Pet
         Route::get('/pet-progress', [App\Http\Controllers\Mentor\PetController::class, 'progress'])->name('pet.progress');
-        
-        // Progress Quest Mahasiswa
         Route::get('/quests-progress', [App\Http\Controllers\Mentor\QuestProgressController::class, 'index'])->name('quests.progress');
-        
-        // Pengumuman (CRUD lengkap)
         Route::resource('/announcements', App\Http\Controllers\Mentor\AnnouncementController::class);
     });
     
-    // ============= MAHASISWA ROUTES =============
+    // ============= MAHASISWA ROUTES (4 PULAU) =============
     Route::middleware(['role:mahasiswa'])->prefix('student')->name('student.')->group(function () {
-        // Tampilan utama dengan Three.js
-        Route::get('/main', [App\Http\Controllers\Student\MainController::class, 'index'])->name('main');
         
-        // Halaman Pet (bisa dipanggil via popup atau langsung)
-        Route::get('/pet', [App\Http\Controllers\Student\PetController::class, 'index'])->name('pet');
-        Route::post('/pet/feed', [App\Http\Controllers\Student\PetController::class, 'feed'])->name('pet.feed');
+        // ============ HERO & MAP ============
+        Route::get('/hero', [App\Http\Controllers\Student\HeroController::class, 'index'])->name('hero');
+        Route::get('/map', [App\Http\Controllers\Student\HeroController::class, 'map'])->name('map');
         
-        // Halaman Quest
-        Route::get('/quests', [App\Http\Controllers\Student\QuestController::class, 'index'])->name('quests');
-        Route::post('/quests/{quest}/complete', [App\Http\Controllers\Student\QuestController::class, 'complete'])->name('quests.complete');
+        // ============ 4 PULAU ============
         
-        // Halaman CFT
-        Route::get('/cft', [App\Http\Controllers\Student\CftController::class, 'index'])->name('cft');
-        Route::get('/cft/{challenge}', [App\Http\Controllers\Student\CftController::class, 'show'])->name('cft.show');
-        Route::post('/cft/{challenge}/submit', [App\Http\Controllers\Student\CftController::class, 'submit'])->name('cft.submit');
+        // 1. MUARALAYA - Pulau Pet
+        Route::prefix('muaralaya')->name('muaralaya.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Student\MuaralayaController::class, 'index'])->name('index');
+            Route::get('/island', [App\Http\Controllers\Student\MuaralayaController::class, 'index'])->name('island');
+            Route::post('/feed', [App\Http\Controllers\Student\MuaralayaController::class, 'feed'])->name('feed');
+        });
+        Route::get('/island/muaralaya', [App\Http\Controllers\Student\MuaralayaController::class, 'index'])->name('island.muaralaya');
         
-        // Pengumuman
-        Route::get('/announcements', [App\Http\Controllers\Student\AnnouncementController::class, 'index'])->name('announcements');
-        Route::get('/announcements/{announcement}', [App\Http\Controllers\Student\AnnouncementController::class, 'show'])->name('announcements.show');
+        // 2. KERTASAKA - Pulau Tavern / Minigames
+        Route::prefix('kertasaka')->name('kertasaka.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Student\KertasakaController::class, 'index'])->name('index');
+            Route::get('/island', [App\Http\Controllers\Student\KertasakaController::class, 'index'])->name('island');
+        });
+        Route::get('/island/kertasaka', [App\Http\Controllers\Student\KertasakaController::class, 'index'])->name('island.kertasaka');
         
-        // Dashboard sederhana (ringkasan)
-        Route::get('/dashboard', [App\Http\Controllers\Student\DashboardController::class, 'index'])->name('dashboard');
+        // 3. SUMARJA - Pulau CTF + Quest (popup)
+        Route::prefix('sumarja')->name('sumarja.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Student\SumarjaController::class, 'index'])->name('index');
+            Route::get('/island', [App\Http\Controllers\Student\SumarjaController::class, 'index'])->name('island');
+            Route::get('/{challenge}', [App\Http\Controllers\Student\SumarjaController::class, 'show'])->name('show');
+            Route::post('/{challenge}/submit', [App\Http\Controllers\Student\SumarjaController::class, 'submit'])->name('submit');
+            Route::post('/quest/{quest}/complete', [App\Http\Controllers\Student\SumarjaController::class, 'complete'])->name('quest.complete');
+        });
+        Route::get('/island/sumarja', [App\Http\Controllers\Student\SumarjaController::class, 'index'])->name('island.sumarja');
+        
+        // 4. MARKASENA - Pulau Pengumuman + Profil
+        Route::prefix('markasena')->name('markasena.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Student\MarkasenaController::class, 'index'])->name('index');
+            Route::get('/island', [App\Http\Controllers\Student\MarkasenaController::class, 'index'])->name('island');
+            Route::get('/profile', [App\Http\Controllers\Student\MarkasenaController::class, 'profile'])->name('profile');
+            Route::put('/profile/update', [App\Http\Controllers\Student\MarkasenaController::class, 'updateProfile'])->name('profile.update');
+            Route::put('/profile/password', [App\Http\Controllers\Student\MarkasenaController::class, 'updatePassword'])->name('profile.password');
+            Route::post('/profile/logout', [App\Http\Controllers\Student\MarkasenaController::class, 'logout'])->name('profile.logout');
+            Route::get('/{announcement}', [App\Http\Controllers\Student\MarkasenaController::class, 'show'])->name('show');
+        });
+        Route::get('/island/markasena', [App\Http\Controllers\Student\MarkasenaController::class, 'index'])->name('island.markasena');
+        
+        // ============ API ROUTES ============
+        Route::prefix('api')->name('api.')->group(function () {
+            // Pet API
+            Route::get('/pet-data', [App\Http\Controllers\Student\MuaralayaController::class, 'getPetData'])->name('pet.data');
+            Route::get('/pet-history', [App\Http\Controllers\Student\MuaralayaController::class, 'getFeedHistory'])->name('pet.history');
+            Route::get('/pet-types', [App\Http\Controllers\Student\MuaralayaController::class, 'getPetTypes'])->name('pet.types');
+            Route::post('/pet-change-type', [App\Http\Controllers\Student\MuaralayaController::class, 'changePetType'])->name('pet.change-type');
+        });
     });
-    
 });
 
-// ============= REDIRECT DASHBOARD (untuk menghindari error) =============
+// ============= REDIRECT DASHBOARD =============
 Route::get('/dashboard', function () {
     if (!auth()->check()) {
         return redirect('/login');
@@ -109,7 +123,7 @@ Route::get('/dashboard', function () {
     return match($role) {
         'developer' => redirect()->route('developer.dashboard'),
         'mentor' => redirect()->route('mentor.dashboard'),
-        'mahasiswa' => redirect()->route('student.main'),
+        'mahasiswa' => redirect()->route('student.hero'),
         default => redirect('/'),
     };
 })->name('dashboard');

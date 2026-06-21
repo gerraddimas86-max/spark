@@ -17,6 +17,9 @@ class CftController extends Controller
         $this->cftService = $cftService;
     }
     
+    /**
+     * Menampilkan daftar challenge CFT (Pulau CTF)
+     */
     public function index()
     {
         $user = Auth::user();
@@ -28,9 +31,13 @@ class CftController extends Controller
         $totalCount = $data['total_count'];
         $totalPoints = $data['total_points'];
         
-        return view('student.cft', compact('challenges', 'completedCount', 'totalCount', 'totalPoints'));
+        // 🔄 DIUBAH: dari 'student.cft' ke 'student.islands.ctf'
+        return view('student.islands.ctf', compact('challenges', 'completedCount', 'totalCount', 'totalPoints'));
     }
     
+    /**
+     * Menampilkan detail challenge tertentu
+     */
     public function show(CftChallenge $challenge)
     {
         $user = Auth::user();
@@ -42,18 +49,23 @@ class CftController extends Controller
             ->exists();
         
         if ($isCompleted) {
-            return redirect()->route('student.cft')
+            // 🔄 DIUBAH: redirect ke island.ctf
+            return redirect()->route('student.island.ctf')
                 ->with('info', 'Challenge ini sudah kamu selesaikan!');
         }
         
         if (!$challenge->is_active) {
-            return redirect()->route('student.cft')
+            // 🔄 DIUBAH: redirect ke island.ctf
+            return redirect()->route('student.island.ctf')
                 ->with('error', 'Challenge ini sedang tidak aktif.');
         }
         
         return view('student.cft_show', compact('challenge'));
     }
     
+    /**
+     * Submit jawaban challenge
+     */
     public function submit(Request $request, CftChallenge $challenge)
     {
         $request->validate([
@@ -75,7 +87,8 @@ class CftController extends Controller
                     'message' => 'Challenge ini sudah pernah kamu selesaikan!'
                 ]);
             }
-            return redirect()->route('student.cft')
+            // 🔄 DIUBAH: redirect ke island.ctf
+            return redirect()->route('student.island.ctf')
                 ->with('error', 'Challenge ini sudah pernah kamu selesaikan!');
         }
         
@@ -86,7 +99,8 @@ class CftController extends Controller
         }
         
         if ($result['success']) {
-            return redirect()->route('student.cft')
+            // 🔄 DIUBAH: redirect ke island.ctf
+            return redirect()->route('student.island.ctf')
                 ->with('success', $result['message']);
         }
         

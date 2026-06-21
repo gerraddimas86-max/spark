@@ -33,12 +33,30 @@ class GroupController extends Controller
             'pet_health' => 0,
         ]);
         
-        // Buat pet untuk kelompok ini
+        // Daftar tipe pet yang tersedia (acak atau berurutan)
+        $petTypes = ['ghost', 'parrot', 'shark', 'octopus', 'dragon', 'phoenix', 'turtle', 'whale'];
+        $randomType = $petTypes[array_rand($petTypes)];
+        
+        // Daftar nama default berdasarkan tipe
+        $defaultNames = [
+            'ghost' => 'Phantom',
+            'parrot' => 'Captain',
+            'shark' => 'Finley',
+            'octopus' => 'Octavius',
+            'dragon' => 'Draco',
+            'phoenix' => 'Ember',
+            'turtle' => 'Shelly',
+            'whale' => 'Wally',
+        ];
+        
+        // Buat pet untuk kelompok ini (level 0 = telur)
         Pet::create([
-            'name' => 'Pet ' . $group->name,
+            'name' => $defaultNames[$randomType] ?? 'Pet ' . $group->name,
             'group_id' => $group->id,
-            'level' => 1,
+            'type' => $randomType,
+            'level' => 0,
             'experience' => 0,
+            'stage' => 'egg',
         ]);
         
         return redirect()->route('developer.groups.index')
@@ -55,9 +73,18 @@ class GroupController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'code' => 'required|string|unique:groups,code,' . $group->id,
+            'pet_name' => 'nullable|string|max:255', // Validasi untuk nama pet
         ]);
         
+        // Update kelompok
         $group->update($request->only('name', 'code'));
+        
+        // Update nama pet jika ada
+        if ($request->filled('pet_name') && $group->pet) {
+            $group->pet->update([
+                'name' => $request->pet_name
+            ]);
+        }
         
         return redirect()->route('developer.groups.index')
             ->with('success', 'Kelompok berhasil diupdate');

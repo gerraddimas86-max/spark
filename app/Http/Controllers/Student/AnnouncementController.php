@@ -17,11 +17,15 @@ class AnnouncementController extends Controller
         $this->questService = $questService;
     }
     
+    /**
+     * Menampilkan daftar pengumuman untuk kelompok mahasiswa
+     */
     public function index()
     {
         $user = Auth::user();
         $group = $user->group;
         
+        // Jika mahasiswa belum memiliki kelompok
         if (!$group) {
             return view('student.announcements', [
                 'announcements' => collect(),
@@ -29,11 +33,12 @@ class AnnouncementController extends Controller
             ]);
         }
         
+        // Ambil semua pengumuman untuk kelompok ini
         $announcements = Announcement::where('group_id', $group->id)
             ->latest()
             ->get();
         
-        // Trigger read announcement quest if any announcement exists
+        // Trigger quest "baca pengumuman" jika ada pengumuman
         if ($announcements->count() > 0) {
             $this->questService->checkAndCompleteQuest($user, 'read_announcement');
         }
@@ -44,12 +49,15 @@ class AnnouncementController extends Controller
         ]);
     }
     
+    /**
+     * Menampilkan detail pengumuman tertentu
+     */
     public function show(Announcement $announcement)
     {
         $user = Auth::user();
         $group = $user->group;
         
-        // Check if announcement belongs to user's group
+        // Validasi: pastikan pengumuman milik kelompok yang sama
         if ($announcement->group_id !== ($group->id ?? null)) {
             abort(403, 'Anda tidak memiliki akses ke pengumuman ini.');
         }
