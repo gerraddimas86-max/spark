@@ -7,7 +7,20 @@ export default {
         "./app/Http/Controllers/**/*.php",
     ],
     theme: {
-        extend: {},
+        extend: {
+            fontFamily: {
+                sans: [
+                    "Segoe UI",
+                    "Poppins",
+                    "system-ui",
+                    "-apple-system",
+                    "sans-serif",
+                ],
+                battlesbridge: ["Battlesbridge", "sans-serif"],
+            },
+            letterSpacing: {
+                widestest: "0.3em",
+            },
+        },
     },
-    plugins: [],
-}
+};

@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+// 1. TAMBAHKAN LINE INI
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    // 2. TAMBAHKAN HasFactory DI SINI
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'name',
@@ -16,7 +19,7 @@ class User extends Authenticatable
         'password',
         'role_id',    // TAMBAHKAN
         'group_id',   // TAMBAHKAN
-        'food_points',// TAMBAHKAN
+        'food_points', // TAMBAHKAN
         'is_active',  // TAMBAHKAN
     ];
 
@@ -31,7 +34,7 @@ class User extends Authenticatable
     ];
 
     // ===== TAMBAHKAN RELASI DI BAWAH INI =====
-    
+
     public function role()
     {
         return $this->belongsTo(Role::class);
@@ -77,7 +80,7 @@ class User extends Authenticatable
     {
         return $this->role && $this->role->name === 'mahasiswa';
     }
-    
+
     // Login pakai NIM (untuk mahasiswa) atau email (untuk mentor/developer)
     public function findForPassport($username)
     {

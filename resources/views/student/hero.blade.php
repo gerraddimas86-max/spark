@@ -1,488 +1,160 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SPARK · Dunia Bajak Laut</title>
     <meta name="csrf-token" content="{{ csrf_token() }}" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
     <style>
-        /* ----- reset & base ----- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            height: 100%;
-            overflow: hidden;
-            background: #0a0a0a;
-            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
-        }
-
-        /* Font Battlesbridge */
+        /* ----- Custom Fonts & Keyframes Layer ----- */
         @font-face {
             font-family: 'Battlesbridge';
-            src: url('{{ asset("font/BattlesbridgeDemo-AL126.ttf") }}') format('truetype');
+            src: url("{{ asset('font/BattlesbridgeDemo-AL126.ttf') }}") format('truetype');
             font-weight: normal;
             font-style: normal;
         }
 
-        /* ----- hide scrollbar ----- */
-        .main-container {
-            width: 100%;
-            height: 100vh;
-            overflow-y: scroll;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-            position: relative;
-        }
-
-        .main-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .main-container {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        /* sticky frame layer */
-        .frame-sticky {
-            position: sticky;
-            top: 0;
-            width: 100%;
-            height: 100vh;
-            overflow: hidden;
-            background: #0a0a0a;
-        }
-
-        /* container untuk crossfade effect */
-        .frame-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        /* Hero Animation Layer */
-        #frameCanvas {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            image-rendering: auto;
-            display: block;
-            opacity: 1;
-            transition: opacity 1s ease-in-out;
-            z-index: 2;
-        }
-
-        #frameCanvas.fade-out {
-            opacity: 0;
-        }
-
-        #frameCanvasNext {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            image-rendering: auto;
-            display: block;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            z-index: 2;
-        }
-
-        #frameCanvasNext.fade-in {
-            opacity: 1;
-        }
-
-        /* Final Content Layer */
-        .final-content {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 1.2s ease-in-out;
-            background: #0a0a0a;
-            padding: 40px 20px;
-            background-image: url('/images/background/hero-final.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-
-        .final-content::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 10, 10, 0.7);
-            z-index: 0;
-        }
-
-        .final-content.visible {
-            opacity: 1;
-            z-index: 3;
-        }
-
-        .final-content > * {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Title - pakai Battlesbridge - DIPERKECIL & DIPERJAUH */
-        .final-content .final-title {
-            font-family: 'Battlesbridge', sans-serif;
-            font-size: clamp(2.2rem, 6vw, 3.8rem);
-            font-weight: normal;
-            color: #ffffff;
-            letter-spacing: 0.05em;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1) 0.3s;
-            margin-bottom: 40px;
-            text-shadow: 0 2px 40px rgba(0, 0, 0, 0.5);
-            line-height: 1;
-        }
-
-        .final-content .final-title.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Subtitle */
-        .final-content .final-subtitle {
-            font-family: 'Segoe UI', 'Poppins', sans-serif;
-            font-size: clamp(0.85rem, 1.5vw, 1.3rem);
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.8);
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            opacity: 0;
-            transform: translateY(15px);
-            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1) 0.5s;
-            margin-bottom: 12px;
-            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .final-content .final-subtitle.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Tagline tambahan */
-        .final-content .final-tagline {
-            font-family: 'Segoe UI', 'Poppins', sans-serif;
-            font-size: clamp(0.6rem, 1vw, 0.85rem);
-            font-weight: 300;
-            color: rgba(255, 255, 255, 0.4);
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            opacity: 0;
-            transform: translateY(15px);
-            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1) 0.7s;
-            margin-bottom: 36px;
-            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .final-content .final-tagline.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Decorative line */
-        .final-content .decorative-line {
-            width: 0px;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.3);
-            margin: 8px 0 24px 0;
-            opacity: 0;
-            transition: all 1s ease 0.4s;
-        }
-
-        .final-content .decorative-line.visible {
-            opacity: 1;
-            width: 60px;
-        }
-
-        /* CTA Button */
-        .final-content .cta-button {
-            padding: 12px 40px;
-            background: transparent;
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 0;
-            font-size: 0.75rem;
-            font-weight: 300;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            opacity: 0;
-            transform: translateY(15px);
-            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1) 0.9s;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(4px);
-            text-decoration: none;
-        }
-
-        .final-content .cta-button.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .final-content .cta-button:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.6);
-            transform: translateY(-2px);
-        }
-
-        .final-content .cta-button:active {
-            transform: scale(0.97);
-        }
-
-        /* scroll spacer */
-        .spacer {
-            height: 200vh;
-            width: 100%;
-            position: relative;
-            z-index: -1;
-        }
-
-        /* ----- loading ----- */
-        .loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-            font-weight: 300;
-            letter-spacing: 0.15em;
-            z-index: 5;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 16px 32px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .loading .spinner {
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-top-color: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            flex-shrink: 0;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* ----- text overlay untuk hero animation ----- */
-        .text-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-            pointer-events: none;
-            text-align: center;
-            padding: 0 20px;
-            transition: opacity 0.8s ease;
-        }
-
-        .text-overlay.hidden {
-            opacity: 0;
-        }
-
-        .text-overlay .text-item {
-            position: absolute;
-            font-weight: 700;
-            color: #ffffff;
-            text-shadow: 0 2px 40px rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            transform: translateY(30px) scale(0.95);
-            transition: none;
-            letter-spacing: 0.02em;
-            line-height: 1.2;
-            margin: 0;
-            pointer-events: none;
-        }
-
-        .text-overlay .belajar {
-            font-size: clamp(2.5rem, 8vw, 4.5rem);
-            font-weight: 700;
-        }
-
-        .text-overlay .bertumbuh {
-            font-size: clamp(2.5rem, 8vw, 4.5rem);
-            font-weight: 700;
-        }
-
-        .text-overlay .bersinar {
-            font-size: clamp(2.5rem, 8vw, 4.5rem);
-            font-weight: 700;
-        }
-
-        .text-overlay .spark {
-            font-family: 'Battlesbridge', sans-serif;
-            font-size: clamp(4rem, 14vw, 7.5rem);
-            font-weight: normal;
-            letter-spacing: 0.08em;
-            color: #ffffff;
-            text-shadow: 0 2px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        /* scroll indicator - DIPERBESAR & WARNA PUTIH */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 32px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 20;
-            color: #ffffff;
-            font-size: 0.9rem;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            animation: bounceDown 2.4s ease-in-out infinite;
-            pointer-events: none;
-            font-weight: 400;
-            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
-            transition: opacity 0.5s ease;
-            font-family: 'Segoe UI', 'Poppins', sans-serif;
-        }
-
-        .scroll-indicator.hidden {
-            opacity: 0 !important;
-            animation: none !important;
-            pointer-events: none !important;
-        }
-
         @keyframes bounceDown {
-            0%, 100% {
-                transform: translateX(-50%) translateY(0);
+
+            0%,
+            100% {
+                /* Kunci posisi X tetap di tengah (-50%), hanya Y yang bergerak up/down */
+                transform: translate(-50%, 0);
                 opacity: 0.7;
             }
+
             50% {
-                transform: translateX(-50%) translateY(8px);
+                transform: translate(-50%, 8px);
                 opacity: 1;
             }
         }
 
-        /* responsive */
-        @media (max-width: 600px) {
-            .scroll-indicator {
-                bottom: 24px;
-                font-size: 0.75rem;
-                letter-spacing: 0.25em;
-            }
-            .final-content .cta-button {
-                padding: 10px 28px;
-                font-size: 0.65rem;
-            }
-            .spacer {
-                height: 150vh;
-            }
-            .text-overlay .belajar {
-                font-size: clamp(2rem, 7vw, 3.5rem);
-            }
-            .text-overlay .bertumbuh {
-                font-size: clamp(2rem, 7vw, 3.5rem);
-            }
-            .text-overlay .bersinar {
-                font-size: clamp(2rem, 7vw, 3.5rem);
-            }
-            .text-overlay .spark {
-                font-size: clamp(3rem, 10vw, 5rem);
-            }
-            .final-content .final-title {
-                font-size: clamp(2rem, 6vw, 3rem);
-                margin-bottom: 30px;
-            }
-            .final-content .final-subtitle {
-                margin-bottom: 10px;
-            }
-            .final-content .final-tagline {
-                margin-bottom: 28px;
-            }
-            .final-content .decorative-line {
-                width: 0px;
-                margin: 6px 0 18px 0;
-            }
-            .final-content .decorative-line.visible {
-                width: 40px;
-            }
+        /* Helper Class untuk Animasi Custom */
+        .animate-bounce-down {
+            animation: bounceDown 2.4s ease-in-out infinite;
+        }
+
+        /* Helper Class untuk Animasi Custom */
+        .animate-bounce-down {
+            animation: bounceDown 2.4s ease-in-out infinite;
+        }
+
+        /* Hide Scrollbar Utilities */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Transisi khusus teks agar pergerakan transform & opacity sinkron dan smooth */
+        .smooth-text-transition {
+            transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+                transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: transform, opacity;
         }
     </style>
 </head>
-<body>
 
-    <div class="main-container" id="mainContainer">
-        <div class="frame-sticky">
-            <div class="frame-container">
-                <!-- Hero Animation Layer -->
-                <img id="frameCanvas" src="{{ asset('hero/0001.png') }}" alt="Hero Animation" />
-                <img id="frameCanvasNext" alt="Hero Animation Next" />
-                
-                <!-- Final Content Layer -->
-                <div class="final-content" id="finalContent">
-                    <div class="decorative-line" id="decorativeLine"></div>
-                    <h1 class="final-title" id="finalTitle">SPARK</h1>
-                    <p class="final-subtitle" id="finalSubtitle">PKKMB FASILKOM UNSRI 2026</p>
-                    <p class="final-tagline" id="finalTagline">#SPARK2026#DYANTARA2026</p>
-                    <!-- Tombol Buka Peta dengan link ke route student.map -->
-                    <a href="{{ route('student.map') }}" class="cta-button" id="ctaButton">Buka Peta</a>
+<body class="bg-[#0a0a0a] m-0 p-0 overflow-hidden h-screen font-sans">
+    <div class="main-container no-scrollbar relative w-full h-screen overflow-x-hidden overflow-y-scroll scroll-smooth"
+        id="mainContainer">
+        <div class="frame-sticky sticky top-0 w-full h-screen overflow-hidden bg-[#0a0a0a]">
+            <div
+                class="frame-container absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full overflow-hidden">
+                <div class="absolute top-6 right-6 md:top-8 right-8 z-[30] flex items-center">
+                    <form method="POST" action="{{ route('logout') }}" id="logoutForm" class="m-0">
+                        @csrf
+                        <button type="submit"
+                            class="px-5 py-2 border border-white/20 bg-black/20 text-white/70 hover:text-white hover:border-white/50 hover:bg-white/[0.05] rounded-none text-[10px] md:text-xs tracking-[0.2em] uppercase font-light transition-all duration-300 ease-in-out backdrop-blur-[2px] cursor-pointer active:scale-[0.97]">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+                <img id="frameCanvas" src="{{ asset('hero/0001.png') }}" alt="Hero Animation"
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-cover block opacity-100 transition-opacity duration-1000 ease-in-out z-[2] [image-rendering:auto]" />
+
+                <img id="frameCanvasNext" alt="Hero Animation Next"
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-cover block opacity-0 transition-opacity duration-1000 ease-in-out z-[2] [image-rendering:auto]" />
+
+                <div id="finalContent"
+                    class="final-content absolute top-0 left-0 w-full h-full z-[1] flex flex-col justify-center items-center opacity-0 transition-all duration-[1200ms] ease-in-out bg-[#0a0a0a] px-5 py-10 bg-cover bg-center bg-no-repeat before:content-[''] before:absolute before:inset-0 before:bg-[#0a0a0a]/70 before:z-0 pointer-events-none"
+                    style="background-image: url('/images/background/hero-final.png');">
+
+                    <div id="decorativeLine"
+                        class="decorative-line relative z-10 w-0 h-[1px] bg-white/30 my-2 md:my-[6px] mx-0 opacity-0 transition-all duration-1000 ease-in-out">
+                    </div>
+
+                    <h1 id="finalTitle"
+                        class="final-title relative z-10 font-normal tracking-wide opacity-0 -translate-y-5 transition-all duration-[800ms] cubic-bezier(0.23,1,0.32,1) mb-10 md:mb-[30px] drop-shadow-[0_2px_40px_rgba(0,0,0,0.5)] leading-none text-center text-white text-[clamp(2.2rem,6vw,3.8rem)] md:text-[clamp(2rem,6vw,3rem)]"
+                        style="font-family: 'Battlesbridge', sans-serif;">
+                        SPARK
+                    </h1>
+
+                    <p id="finalSubtitle"
+                        class="final-subtitle relative z-10 font-sans text-[clamp(0.85rem,1.5vw,1.3rem)] font-semibold text-white/80 tracking-[0.2em] uppercase opacity-0 -translate-y-[15px] transition-all duration-[800ms] cubic-bezier(0.23,1,0.32,1) mb-3 md:mb-[10px] drop-shadow-[0_2px_20px_rgba(0,0,0,0.5)]">
+                        PKKMB FASILKOM UNSRI 2026
+                    </p>
+
+                    <p id="finalTagline"
+                        class="final-tagline relative z-10 font-sans text-[clamp(0.6rem,1vw,0.85rem)] font-light text-white/40 tracking-[0.3em] uppercase opacity-0 -translate-y-[15px] transition-all duration-[800ms] cubic-bezier(0.23,1,0.32,1) mb-9 md:mb-[28px] drop-shadow-[0_2px_20px_rgba(0,0,0,0.5)]">
+                        #SPARK2026#DYANTARA2026
+                    </p>
+
+                    <a href="{{ route('student.map') }}" id="ctaButton"
+                        class="cta-button relative z-10 px-10 py-3 md:px-7 md:py-[10px] bg-white/[0.05] text-white border border-white/30 rounded-none text-xs md:text-[0.65rem] font-light tracking-[0.2em] uppercase cursor-pointer backdrop-blur-[4px] no-underline opacity-0 -translate-y-[15px] transition-all duration-[800ms] cubic-bezier(0.23,1,0.32,1) hover:bg-white/10 hover:border-white/60 hover:-translate-y-[2px] active:scale-[0.97]">
+                        Buka Peta
+                    </a>
                 </div>
             </div>
 
-            <div class="loading" id="loadingIndicator">
-                <span class="spinner"></span> Memuat animasi
+            <div id="loadingIndicator"
+                class="loading absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white/60 text-sm font-light tracking-wide z-[5] bg-black/50 px-8 py-4 border border-white/10 backdrop-blur-[4px] flex items-center gap-3">
+                <span
+                    class="spinner w-[18px] h-[18px] border-2 border-white/10 border-t-white/50 rounded-full animate-spin"></span>
+                Memuat animasi
             </div>
 
-            <div class="text-overlay" id="textOverlay">
-                <h1 class="text-item belajar" id="textBelajar">Belajar Bersama</h1>
-                <h1 class="text-item bertumbuh" id="textBertumbuh">Bertumbuh Bersama</h1>
-                <h1 class="text-item bersinar" id="textBersinar">Bersinar Bersama</h1>
-                <h1 class="text-item spark" id="textSpark">SPARK</h1>
+            <div id="textOverlay"
+                class="text-overlay absolute inset-0 flex flex-col justify-between items-center z-10 pointer-events-none text-center px-5 py-24 transition-opacity duration-[800ms] ease-in-out">
+
+                <div></div>
+
+                <h1 id="textSpark"
+                    class="text-item spark font-normal text-white drop-shadow-[0_2px_40px_rgba(0,0,0,0.5)] opacity-0 -translate-y-[10px] scale-[0.98] tracking-[0.08em] leading-none m-0 text-[clamp(4rem,14vw,7.5rem)] md:text-[clamp(3rem,10vw,5rem)] smooth-text-transition mt-20"
+                    style="font-family: 'Battlesbridge', sans-serif;">
+                    SPARK
+                </h1>
+
+                <div class="relative w-full h-[50px] mb-10 flex justify-center items-center">
+                    <p id="textBelajar"
+                        class="text-item belajar absolute font-medium text-white/80 tracking-[0.15em] uppercase m-0 text-base md:text-xl smooth-text-transition opacity-0 translate-y-[15px] drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+                        Belajar Bersama
+                    </p>
+                    <p id="textBertumbuh"
+                        class="text-item bertumbuh absolute font-medium text-white/80 tracking-[0.15em] uppercase m-0 text-base md:text-xl smooth-text-transition opacity-0 translate-y-[15px] drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+                        Bertumbuh Bersama
+                    </p>
+                    <p id="textBersinar"
+                        class="text-item bersinar absolute font-medium text-white/80 tracking-[0.15em] uppercase m-0 text-base md:text-xl smooth-text-transition opacity-0 translate-y-[15px] drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+                        Bersinar Bersama
+                    </p>
+                </div>
             </div>
 
-            <!-- Scroll Indicator -->
-            <div class="scroll-indicator" id="scrollIndicator">Scroll</div>
+            <div id="scrollIndicator"
+                class="scroll-indicator animate-bounce-down absolute bottom-8 md:bottom-6 left-1/2 z-20 text-white text-sm md:text-[0.75rem] tracking-[0.3em] md:tracking-[0.25em] uppercase pointer-events-none font-normal drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)] transition-opacity duration-500 ease-in-out font-sans">
+                Scroll
+            </div>
         </div>
-        <div class="spacer"></div>
+
+        <div class="spacer h-[200vh] md:h-[150vh] w-full relative -z-[1]"></div>
     </div>
 
     <script>
@@ -504,7 +176,6 @@
         const scrollIndicator = document.getElementById('scrollIndicator');
         const textOverlay = document.getElementById('textOverlay');
         const finalContent = document.getElementById('finalContent');
-        const ctaButton = document.getElementById('ctaButton');
 
         const textEls = {
             belajar: document.getElementById('textBelajar'),
@@ -528,11 +199,9 @@
         let loaded = 0;
         let ready = false;
         let currentIndex = 1;
-        let isTransitioning = false;
         let hasReachedFinal = false;
         let isGoingBack = false;
         let isFirstScroll = true;
-        let currentActiveIndex = -1;
 
         // ============================================================
         //  LOAD FRAMES
@@ -560,7 +229,8 @@
         function updateLoadingProgress() {
             const pct = Math.round((loaded / TOTAL_FRAMES) * 100);
             if (loadingEl) {
-                loadingEl.innerHTML = `<span class="spinner"></span> Memuat animasi ${pct}%`;
+                loadingEl.innerHTML =
+                    `<span class="spinner w-[18px] h-[18px] border-2 border-white/10 border-top-color:rgba(255,255,255,0.5) rounded-full animate-spin"></span> Memuat animasi ${pct}%`;
             }
         }
 
@@ -579,148 +249,141 @@
             hasReachedFinal = true;
             isGoingBack = false;
 
-            // Sembunyikan scroll indicator dengan force
-            scrollIndicator.classList.add('hidden');
-            scrollIndicator.style.display = 'none';
-            
-            canvas.classList.add('fade-out');
-            textOverlay.classList.add('hidden');
-            
-            // Sembunyikan semua teks
-            Object.values(textEls).forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(30px) scale(0.95)';
-                el.classList.remove('visible');
-            });
+            scrollIndicator.style.opacity = '0';
+            textOverlay.style.opacity = '0';
 
-            finalContent.classList.add('visible');
-            
+            finalContent.classList.remove('opacity-0', 'pointer-events-none');
+            finalContent.classList.add('opacity-100', 'z-[3]', 'pointer-events-auto');
+
             setTimeout(() => {
-                finalEls.line.classList.add('visible');
+                finalEls.line.classList.remove('opacity-0');
+                finalEls.line.classList.add('w-24', 'opacity-100');
             }, 200);
-            
+
             setTimeout(() => {
-                finalEls.title.classList.add('visible');
+                finalEls.title.classList.remove('opacity-0', '-translate-y-5');
+                finalEls.title.classList.add('opacity-100', 'translate-y-0');
             }, 400);
-            
+
             setTimeout(() => {
-                finalEls.subtitle.classList.add('visible');
+                finalEls.subtitle.classList.remove('opacity-0', '-translate-y-[15px]');
+                finalEls.subtitle.classList.add('opacity-100', 'translate-y-0');
             }, 600);
-            
+
             setTimeout(() => {
-                finalEls.tagline.classList.add('visible');
-            }, 700);
-            
+                finalEls.tagline.classList.remove('opacity-0', '-translate-y-[15px]');
+                finalEls.tagline.classList.add('opacity-100', 'translate-y-0');
+            }, 750);
+
             setTimeout(() => {
-                finalEls.cta.classList.add('visible');
+                finalEls.cta.classList.remove('opacity-0', '-translate-y-[15px]');
+                finalEls.cta.classList.add('opacity-100', 'translate-y-0');
             }, 900);
         }
 
         function hideFinalContent() {
-            if (!hasReachedFinal) return;
-            if (isGoingBack) return;
-            
+            if (!hasReachedFinal || isGoingBack) return;
             isGoingBack = true;
 
-            finalContent.classList.remove('visible');
-            Object.values(finalEls).forEach(el => {
-                el.classList.remove('visible');
-            });
+            scrollIndicator.style.opacity = '1';
+            textOverlay.style.opacity = '1';
 
-            canvas.classList.remove('fade-out');
-            canvas.style.opacity = 1;
-            textOverlay.classList.remove('hidden');
-            
-            // Munculkan kembali scroll indicator
-            scrollIndicator.classList.remove('hidden');
-            scrollIndicator.style.display = '';
+            finalContent.classList.remove('opacity-100', 'z-[3]', 'pointer-events-auto');
+            finalContent.classList.add('opacity-0', 'z-[1]', 'pointer-events-none');
+
+            finalEls.line.classList.remove('w-24', 'opacity-100');
+            finalEls.line.classList.add('w-0', 'opacity-0');
+
+            finalEls.title.classList.remove('opacity-100', 'translate-y-0');
+            finalEls.title.classList.add('opacity-0', '-translate-y-5');
+
+            finalEls.subtitle.classList.remove('opacity-100', 'translate-y-0');
+            finalEls.subtitle.classList.add('opacity-0', '-translate-y-[15px]');
+
+            finalEls.tagline.classList.remove('opacity-100', 'translate-y-0');
+            finalEls.tagline.classList.add('opacity-0', '-translate-y-[15px]');
+
+            finalEls.cta.classList.remove('opacity-100', 'translate-y-0');
+            finalEls.cta.classList.add('opacity-0', '-translate-y-[15px]');
+
+            canvas.style.opacity = '1';
 
             hasReachedFinal = false;
             isGoingBack = false;
-            isTransitioning = false;
-            currentActiveIndex = -1;
-            
+
             const maxScroll = container.scrollHeight - window.innerHeight;
             let progress = maxScroll > 0 ? Math.min(container.scrollTop / maxScroll, 1) : 0;
             updateFrame(progress);
         }
 
         // ============================================================
-        //  UPDATE TEXT WITH SLIDESHOW EFFECT - FIXED
+        //  LOGIKA SEKUENSIAL TEKS (Bersama Selesai -> SPARK Muncul)
         // ============================================================
         function updateTextSlideshow(progress) {
-            const textKeys = ['belajar', 'bertumbuh', 'bersinar', 'spark'];
-            const totalItems = textKeys.length;
-            
-            // Setiap teks muncul dengan durasi yang lebih panjang dan ada jeda
-            // Total progress: 0.05 - 0.75 (0.70 total)
+            // 1. ATUR SUBTITLE (Belajar, Bertumbuh, Bersinar) -> Berjalan di awal (0.05 - 0.55)
+            const subKeys = ['belajar', 'bertumbuh', 'bersinar'];
+            const totalItems = subKeys.length;
+
             const startOffset = 0.05;
-            const segmentDuration = 0.165; // Durasi setiap teks
-            const gapDuration = 0.02; // Jeda antar teks
-            
+            const segmentDuration = 0.15;
+            const gapDuration = 0.01;
+            const endOfSlideshow = startOffset + (totalItems * (segmentDuration + gapDuration)); // Berakhir di ~0.53
+
             let activeIndex = -1;
             let fadeProgress = 0;
-            
+
             for (let i = 0; i < totalItems; i++) {
                 const start = startOffset + (i * (segmentDuration + gapDuration));
                 const end = start + segmentDuration;
-                
+
                 if (progress >= start && progress < end) {
                     activeIndex = i;
-                    // Hitung progress fade in/out dalam segment (0-1)
-                    const segmentProgress = (progress - start) / segmentDuration;
-                    fadeProgress = Math.min(Math.max(segmentProgress, 0), 1);
+                    fadeProgress = Math.min(Math.max((progress - start) / segmentDuration, 0), 1);
                     break;
                 }
             }
-            
-            // Reset semua teks ke keadaan default (hidden)
-            textKeys.forEach(key => {
+
+            // Reset default subtitle state
+            subKeys.forEach(key => {
                 const el = textEls[key];
-                // Jika tidak aktif, sembunyikan
                 el.style.opacity = '0';
-                el.style.transform = 'translateY(30px) scale(0.95)';
-                el.classList.remove('visible');
+                el.style.transform = 'translateY(15px)';
             });
-            
-            // Tampilkan teks yang aktif dengan efek
+
+            // Animasi Subtitle Aktif
             if (activeIndex >= 0 && activeIndex < totalItems) {
-                const activeKey = textKeys[activeIndex];
+                const activeKey = subKeys[activeIndex];
                 const activeEl = textEls[activeKey];
-                
-                // Fase: 0-0.25 = fade in, 0.25-0.75 = stay, 0.75-1.0 = fade out
                 let opacity = 0;
-                let translateY = 30;
-                let scale = 0.95;
-                
-                if (fadeProgress < 0.25) {
-                    // Fade in
-                    const t = fadeProgress / 0.25;
-                    opacity = t * t * (3 - 2 * t); // Smooth step
-                    translateY = 30 - (30 * t);
-                    scale = 0.95 + (0.05 * t);
-                } else if (fadeProgress < 0.75) {
-                    // Stay
+                let translateY = 15;
+
+                if (fadeProgress < 0.20) {
+                    const t = fadeProgress / 0.20;
+                    opacity = t * t * (3 - 2 * t);
+                    translateY = 15 - (15 * t);
+                } else if (fadeProgress < 0.80) {
                     opacity = 1;
                     translateY = 0;
-                    scale = 1;
                 } else {
-                    // Fade out
-                    const t = (fadeProgress - 0.75) / 0.25;
-                    opacity = 1 - (t * t * (3 - 2 * t)); // Smooth step reverse
-                    translateY = -20 * t;
-                    scale = 1 - (0.05 * t);
+                    const t = (fadeProgress - 0.80) / 0.20;
+                    opacity = 1 - (t * t * (3 - 2 * t));
+                    translateY = -10 * t;
                 }
-                
-                // Terapkan style
+
                 activeEl.style.opacity = opacity;
-                activeEl.style.transform = `translateY(${translateY}px) scale(${scale})`;
-                
-                if (opacity > 0.01) {
-                    activeEl.classList.add('visible');
-                } else {
-                    activeEl.classList.remove('visible');
-                }
+                activeEl.style.transform = `translateY(${translateY}px)`;
+            }
+
+            // 2. ATUR TULISAN SPARK UTAMA -> Hanya muncul SELELAH slideshow selesai (0.58 - 0.80)
+            if (progress >= 0.56 && progress < TRANSITION_START) {
+                // Hitung fade-in halus khusus untuk SPARK saat scroll memasuki areanya
+                const sparkFadeIn = Math.min((progress - 0.56) / 0.06, 1);
+                textEls.spark.style.opacity = sparkFadeIn;
+                textEls.spark.style.transform =
+                    `translateY(${-10 + (10 * sparkFadeIn)}px) scale(${0.98 + (0.02 * sparkFadeIn)})`;
+            } else {
+                textEls.spark.style.opacity = '0';
+                textEls.spark.style.transform = 'translateY(-10px) scale(0.98)';
             }
         }
 
@@ -732,47 +395,50 @@
 
             let p = Math.min(Math.max(rawProgress, 0), 1);
 
-            if (hasReachedFinal && p < TRANSITION_START - 0.05) {
+            // Jika scroll ke atas kembali, sembunyikan konten final
+            if (hasReachedFinal && p < TRANSITION_START - 0.03) {
                 hideFinalContent();
                 return;
             }
 
-            if (p >= TRANSITION_START && !hasReachedFinal && !isGoingBack) {
+            // MEMASUKI TRANSISI FINAL CONTENT (0.80 - 1.00)
+            if (p >= TRANSITION_START) {
                 const fadeProgress = Math.min((p - TRANSITION_START) / (1 - TRANSITION_START), 1);
                 canvas.style.opacity = 1 - fadeProgress;
-                
+
                 const lastFrameIdx = TOTAL_FRAMES - 1;
                 if (frames[lastFrameIdx] && canvasNext.src !== frames[lastFrameIdx].src) {
                     canvasNext.src = frames[lastFrameIdx].src;
                     canvasNext.style.opacity = fadeProgress;
                 }
-                
-                if (fadeProgress >= 0.95 && !isTransitioning) {
-                    isTransitioning = true;
+
+                // Trigger konten final secara aman tanpa kunci boolean kaku
+                if (p >= 0.92 && !hasReachedFinal) {
                     showFinalContent();
                 }
-            } 
-            
+                return;
+            }
+
+            // TIMELINE ANIMASI IMAGE SEQUENCE (0.00 - 0.80)
             if (!hasReachedFinal && p < TRANSITION_START) {
                 if (canvas.style.opacity !== '1') {
                     canvas.style.opacity = 1;
                     canvasNext.style.opacity = 0;
                 }
-                
+
                 const floatIndex = p * TOTAL_FRAMES;
                 let idx = Math.floor(floatIndex) % TOTAL_FRAMES;
-                
+
                 if (idx < 0) idx = 0;
                 if (idx >= TOTAL_FRAMES) idx = TOTAL_FRAMES - 1;
-                
+
                 const frameIndex = idx + 1;
-                
+
                 if (frameIndex !== currentIndex && frames[idx]) {
                     currentIndex = frameIndex;
                     canvas.src = frames[idx].src;
                 }
 
-                // Update text dengan efek slideshow
                 updateTextSlideshow(p);
             }
         }
@@ -781,12 +447,10 @@
         //  SCROLL HANDLER
         // ============================================================
         let ticking = false;
-        let lastScrollTop = 0;
 
         container.addEventListener('scroll', function() {
             if (isFirstScroll) {
                 isFirstScroll = false;
-                // Mulai animasi text dari awal saat first scroll
                 const maxScroll = container.scrollHeight - window.innerHeight;
                 let progress = maxScroll > 0 ? Math.min(container.scrollTop / maxScroll, 1) : 0;
                 updateFrame(progress);
@@ -794,18 +458,16 @@
             }
 
             if (!ticking) {
-                requestAnimationFrame(() => {
+                window.requestAnimationFrame(() => {
                     const maxScroll = container.scrollHeight - window.innerHeight;
                     let progress = maxScroll > 0 ? Math.min(container.scrollTop / maxScroll, 1) : 0;
-                    
-                    const scrollTop = container.scrollTop;
-                    lastScrollTop = scrollTop;
-                    
                     updateFrame(progress);
                     ticking = false;
                 });
                 ticking = true;
             }
+        }, {
+            passive: true
         });
 
         // ============================================================
@@ -814,36 +476,31 @@
         document.addEventListener('keydown', (e) => {
             const step = 60;
             if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-                container.scrollBy({ top: step, behavior: 'smooth' });
+                container.scrollBy({
+                    top: step,
+                    behavior: 'smooth'
+                });
                 e.preventDefault();
             } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-                container.scrollBy({ top: -step, behavior: 'smooth' });
+                container.scrollBy({
+                    top: -step,
+                    behavior: 'smooth'
+                });
                 e.preventDefault();
             }
         });
-
-        // ============================================================
-        //  CTA BUTTON - Redirect ke halaman map
-        // ============================================================
-        // Sudah menggunakan tag <a> dengan href="{{ route('student.map') }}"
-        // Tidak perlu event listener lagi
 
         // ============================================================
         //  INIT
         // ============================================================
         loadFrames();
 
-        // Tampilkan frame pertama sebagai placeholder
         setTimeout(() => {
             if (!ready) {
                 canvas.src = BASE_PATH + '0001' + EXT;
             }
         }, 1200);
-
-        console.log('SPARK · Clean Design');
-        console.log('Total frames: ' + TOTAL_FRAMES);
-        console.log('Transisi di ' + (TRANSITION_START * 100) + '%');
-        console.log('🗺️ Tombol "Buka Peta" mengarah ke: ' + '{{ route("student.map") }}');
     </script>
 </body>
+
 </html>
