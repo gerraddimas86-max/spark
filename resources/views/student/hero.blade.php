@@ -82,6 +82,15 @@
             class="absolute inset-0 bg-black opacity-0 z-[40] pointer-events-none transition-opacity duration-700 ease-in-out">
         </div>
 
+        <!-- TOMBOL SKIP (Hanya Muncul Saat Transisi Berlayar) -->
+        <div id="skipContainer"
+            class="absolute bottom-16 left-1/2 -translate-x-1/2 z-[50] hidden opacity-0 transition-opacity duration-500 ease-in-out w-full flex justify-center">
+            <button id="btnSkip"
+                class="px-12 py-4 bg-black/40 text-white border border-white/30 rounded-none text-xs md:text-sm font-medium tracking-[0.25em] uppercase cursor-pointer backdrop-blur-[4px] transition-all duration-300 ease-in-out hover:bg-white/10 hover:border-white/70 hover:tracking-[0.3em] active:scale-[0.96] drop-shadow-[0_4px_15px_rgba(0,0,0,0.4)]">
+                Skip
+            </button>
+        </div>
+
         <div class="absolute top-6 right-6 md:top-8 right-8 z-[30] flex items-center">
             <form method="POST" action="{{ route('logout') }}" id="logoutForm" class="m-0">
                 @csrf
@@ -156,13 +165,76 @@
             const videoNext = document.getElementById("bgVideoNext");
             const btnBerlayar = document.getElementById("btnBerlayar");
             const btnBerlabuh = document.getElementById("btnBerlabuh");
+            const btnSkip = document.getElementById("btnSkip");
+            const skipContainer = document.getElementById("skipContainer");
             const interactiveZone = document.getElementById("interactiveZone");
             const finalContent = document.getElementById("finalContent");
             const blackOverlay = document.getElementById("blackOverlay");
 
+            let transitTimeout1 = null;
+            let transitTimeout2 = null;
+
+            // --- FUNGSI REUSABLE: LANGSUNG LOMPAT KE FASE FINAL ---
+            function forceGoToFinal() {
+                // Clear semua timeout transisi yang sedang berjalan agar tidak bertabrakan
+                clearTimeout(transitTimeout1);
+                clearTimeout(transitTimeout2);
+
+                sessionStorage.setItem("isFinalPhase", "true");
+
+                // Sembunyikan tombol skip dengan efek transisi halus
+                skipContainer.classList.add("opacity-0");
+                setTimeout(() => {
+                    skipContainer.classList.add("hidden");
+                }, 500);
+
+                // Amankan state video
+                if (videoTransit) {
+                    videoTransit.onended = null; // Unbind callback asli bawaan
+                    videoTransit.pause();
+                    videoTransit.classList.replace("opacity-100", "opacity-0");
+                    videoTransit.classList.replace("z-[2]", "z-[1]");
+                }
+                if (videoLoop) {
+                    videoLoop.pause();
+                    videoLoop.classList.replace("opacity-100", "opacity-0");
+                    videoLoop.classList.replace("z-[2]", "z-[1]");
+                }
+
+                // Gelapkan overlay hitam sebentar, lalu langsung bangun halaman final
+                blackOverlay.classList.remove("opacity-0");
+                blackOverlay.classList.add("opacity-100");
+
+                setTimeout(() => {
+                    interactiveZone.classList.add("hidden");
+                    interactiveZone.classList.remove("flex", "flex-col", "justify-between", "items-center");
+
+                    if (videoNext) {
+                        videoNext.currentTime = 0;
+                        videoNext.classList.replace("opacity-0", "opacity-100");
+                        videoNext.classList.replace("z-[1]", "z-[2]");
+                        videoNext.play().catch(err => console.log(err));
+                    }
+
+                    finalContent.classList.remove("hidden");
+                    finalContent.classList.add("flex", "flex-col", "justify-center", "items-center");
+
+                    setTimeout(() => {
+                        finalContent.classList.remove("pointer-events-none");
+                        finalContent.classList.add("opacity-100");
+                        blackOverlay.classList.replace("opacity-100", "opacity-0");
+                    }, 50);
+
+                    // Kembalikan state tombol berlayar ke normal
+                    if (btnBerlayar) {
+                        btnBerlayar.disabled = false;
+                        btnBerlayar.style.pointerEvents = "auto";
+                    }
+                }, 400); // Durasi transisi pemotongan jalur cepat (fast-path overlay)
+            }
+
             // --- STRATEGI UTAMA: INITIALISASI STATUS HALAMAN BERDASARKAN SESSION ---
             if (sessionStorage.getItem("isFinalPhase") === "true") {
-                // Skenario A: User me-refresh saat berada di halaman Final
                 if (videoNext) {
                     videoNext.classList.replace("opacity-0", "opacity-100");
                     videoNext.classList.replace("z-[1]", "z-[2]");
@@ -171,12 +243,9 @@
 
                 finalContent.classList.remove("hidden");
                 finalContent.classList.add("flex", "flex-col", "justify-center", "items-center");
-
-                // Tampilkan secara instan tanpa kedipan visual
                 finalContent.classList.remove("pointer-events-none");
                 finalContent.classList.add("opacity-100");
             } else {
-                // Skenario B: User berada di halaman Hero Awal (Normal/Baru Buka Browser)
                 if (videoLoop) {
                     videoLoop.classList.replace("opacity-0", "opacity-100");
                     videoLoop.classList.replace("z-[1]", "z-[2]");
@@ -185,8 +254,6 @@
 
                 interactiveZone.classList.remove("hidden");
                 interactiveZone.classList.add("flex", "flex-col", "justify-between", "items-center");
-
-                // Tampilkan menu awal secara instan
                 interactiveZone.classList.remove("pointer-events-none");
                 interactiveZone.classList.add("opacity-100");
             }
@@ -203,7 +270,7 @@
                     blackOverlay.classList.remove("opacity-0");
                     blackOverlay.classList.add("opacity-100");
 
-                    setTimeout(() => {
+                    transitTimeout1 = setTimeout(() => {
                         interactiveZone.classList.add("hidden");
                         interactiveZone.classList.remove("flex", "flex-col", "justify-between",
                             "items-center");
@@ -219,12 +286,22 @@
 
                             videoTransit.play().then(() => {
                                 blackOverlay.classList.replace("opacity-100", "opacity-0");
+
+                                // TAMPILKAN TOMBOL SKIP SAAT VIDEO BERMAIN
+                                skipContainer.classList.remove("hidden");
+                                setTimeout(() => {
+                                    skipContainer.classList.add("opacity-100");
+                                }, 50);
+
                             }).catch(err => console.log(err));
 
+                            // Kejadian jika video transisi selesai secara normal tanpa di-skip
                             videoTransit.onended = function() {
+                                skipContainer.classList.add("opacity-0");
                                 blackOverlay.classList.replace("opacity-0", "opacity-100");
 
-                                setTimeout(() => {
+                                transitTimeout2 = setTimeout(() => {
+                                    skipContainer.classList.add("hidden");
                                     videoTransit.classList.replace("opacity-100",
                                         "opacity-0");
                                     videoTransit.classList.replace("z-[2]", "z-[1]");
@@ -257,6 +334,11 @@
                         }
                     }, 700);
                 });
+            }
+
+            // --- BINDING EVENT TOMBOL SKIP ---
+            if (btnSkip) {
+                btnSkip.addEventListener("click", forceGoToFinal);
             }
 
             // --- PROSES BERLABUH (KEMBALI KE MENU UTAMA) ---
