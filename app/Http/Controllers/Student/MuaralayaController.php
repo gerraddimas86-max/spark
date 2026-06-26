@@ -15,6 +15,30 @@ class MuaralayaController extends Controller
 {
     protected $petService;
 
+    // Mapping tipe pet ke folder gambar
+    protected $petTypeMap = [
+        'octopus' => 'gurita',
+        'ghost' => 'hantu',
+        'parrot' => 'burung-beo',
+        'shark' => 'hiu',
+        'pufferfish' => 'ikan-buntal',
+        'crab' => 'kepiting',
+        'seahorse' => 'kuda-laut',
+        'turtle' => 'kura-kura',
+    ];
+
+    // 8 tipe pet untuk 8 kelompok
+    protected $petTypes = [
+        'octopus',
+        'ghost', 
+        'parrot',
+        'shark',
+        'pufferfish',
+        'crab',
+        'seahorse',
+        'turtle',
+    ];
+
     public function __construct(PetService $petService)
     {
         $this->petService = $petService;
@@ -49,9 +73,10 @@ class MuaralayaController extends Controller
             'exp_needed' => $this->getExpNeeded($pet->level),
             'exp_progress' => $this->getExpProgress($pet),
             'stage' => $pet->stage,
-            'stage_name' => $this->petService->getStageName($pet->stage),
-            'stage_badge_color' => $this->petService->getStageBadgeColor($pet->stage),
-            'emoji' => $pet->emoji,
+            'stage_name' => $pet->stage_name,
+            'stage_badge_color' => $pet->stage_badge_color,
+            'icon' => $pet->icon,
+            'stage_icon' => $pet->stage_icon,
             'image_url' => $pet->image,
             'food_points' => $user->food_points ?? 0,
         ];
@@ -65,7 +90,10 @@ class MuaralayaController extends Controller
             ];
         });
         
-        return view('student.islands.muaralaya.index', compact('pet', 'petData', 'feedHistory', 'historyData', 'foodPoints'));
+        // Nama grup untuk ditampilkan
+        $groupName = $user->group ? $user->group->name : null;
+        
+        return view('student.islands.muaralaya.index', compact('pet', 'petData', 'feedHistory', 'historyData', 'foodPoints', 'groupName'));
     }
     
     /**
@@ -101,9 +129,11 @@ class MuaralayaController extends Controller
                 'exp_needed' => $this->getExpNeeded($pet->level),
                 'exp_progress' => $this->getExpProgress($pet),
                 'stage' => $pet->stage,
-                'stage_name' => $this->petService->getStageName($pet->stage),
-                'emoji' => $pet->emoji,
+                'stage_name' => $pet->stage_name,
+                'icon' => $pet->icon,
+                'stage_icon' => $pet->stage_icon,
                 'type' => $pet->type,
+                'image_url' => $pet->image,
             ],
             'food_points' => $user->food_points,
             'level_up' => $result['leveled_up'] ?? false,
@@ -118,6 +148,7 @@ class MuaralayaController extends Controller
     
     /**
      * Mendapatkan pet user
+     * Jika user di group, ambil pet group, jika tidak buat baru
      */
     private function getUserPet($user)
     {
@@ -131,15 +162,23 @@ class MuaralayaController extends Controller
         return $this->createPetForUser($user);
     }
     
+    /**
+     * Membuat pet untuk group dengan tipe unik berdasarkan ID group
+     */
     private function createPetForGroup($groupId)
     {
         $group = \App\Models\Group::find($groupId);
         $groupName = $group ? $group->name : 'Group';
         
+        // Pilih tipe pet berdasarkan group_id (1-8)
+        // Group 1 = octopus, Group 2 = ghost, dst.
+        $typeIndex = ($groupId - 1) % count($this->petTypes);
+        $type = $this->petTypes[$typeIndex];
+        
         return Pet::create([
             'name' => 'Pet ' . $groupName,
             'group_id' => $groupId,
-            'type' => 'octopus',
+            'type' => $type,
             'level' => 0,
             'experience' => 0,
             'stage' => 'egg',
@@ -147,12 +186,18 @@ class MuaralayaController extends Controller
         ]);
     }
     
+    /**
+     * Membuat pet untuk user (jika tidak punya group)
+     */
     private function createPetForUser($user)
     {
+        // Random tipe pet untuk user tanpa group
+        $randomType = $this->petTypes[array_rand($this->petTypes)];
+        
         return Pet::create([
             'name' => 'Pet ' . $user->name,
             'group_id' => null,
-            'type' => 'octopus',
+            'type' => $randomType,
             'level' => 0,
             'experience' => 0,
             'stage' => 'egg',
@@ -160,15 +205,29 @@ class MuaralayaController extends Controller
         ]);
     }
     
+    /**
+     * Mendapatkan EXP yang dibutuhkan untuk level tertentu
+     */
     private function getExpNeeded($level)
     {
         return ($level + 1) * 100;
     }
     
+    /**
+     * Mendapatkan progress EXP dalam persentase
+     */
     private function getExpProgress($pet)
     {
         $expNeeded = $this->getExpNeeded($pet->level);
         return round(($pet->experience / $expNeeded) * 100, 1);
+    }
+
+    /**
+     * Mendapatkan mapping tipe pet ke folder
+     */
+    private function getPetFolder($type)
+    {
+        return $this->petTypeMap[$type] ?? 'gurita';
     }
 
     // ============================================================
@@ -201,9 +260,10 @@ class MuaralayaController extends Controller
                 'exp_needed' => $this->getExpNeeded($pet->level),
                 'exp_progress' => $this->getExpProgress($pet),
                 'stage' => $pet->stage,
-                'stage_name' => $this->petService->getStageName($pet->stage),
-                'stage_badge_color' => $this->petService->getStageBadgeColor($pet->stage),
-                'emoji' => $pet->emoji,
+                'stage_name' => $pet->stage_name,
+                'stage_badge_color' => $pet->stage_badge_color,
+                'icon' => $pet->icon,
+                'stage_icon' => $pet->stage_icon,
                 'image_url' => $pet->image,
                 'food_points' => $user->food_points ?? 0,
             ]
@@ -251,12 +311,12 @@ class MuaralayaController extends Controller
         $types = [
             ['value' => 'octopus', 'label' => '🐙 Gurita'],
             ['value' => 'ghost', 'label' => '👻 Hantu'],
-            ['value' => 'parrot', 'label' => '🦜 Burung'],
+            ['value' => 'parrot', 'label' => '🦜 Burung Beo'],
             ['value' => 'shark', 'label' => '🦈 Hiu'],
-            ['value' => 'dragon', 'label' => '🐉 Naga'],
-            ['value' => 'phoenix', 'label' => '🦅 Phoenix'],
+            ['value' => 'pufferfish', 'label' => '🐡 Ikan Buntal'],
+            ['value' => 'crab', 'label' => '🦀 Kepiting'],
+            ['value' => 'seahorse', 'label' => '🐴 Kuda Laut'],
             ['value' => 'turtle', 'label' => '🐢 Kura-kura'],
-            ['value' => 'whale', 'label' => '🐋 Paus'],
         ];
         
         return response()->json([
@@ -271,7 +331,7 @@ class MuaralayaController extends Controller
     public function changePetType(Request $request)
     {
         $request->validate([
-            'type' => 'required|in:octopus,ghost,parrot,shark,dragon,phoenix,turtle,whale',
+            'type' => 'required|in:octopus,ghost,parrot,shark,pufferfish,crab,seahorse,turtle',
         ]);
         
         $user = Auth::user();
@@ -292,7 +352,8 @@ class MuaralayaController extends Controller
             'message' => 'Tipe pet berhasil diganti!',
             'data' => [
                 'type' => $pet->type,
-                'emoji' => $pet->emoji,
+                'icon' => $pet->icon,
+                'image_url' => $pet->image,
             ]
         ]);
     }

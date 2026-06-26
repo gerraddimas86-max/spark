@@ -6,6 +6,10 @@
     <title>SPARK - 🌊 Muaralaya · Pulau Pet</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <style>
         * {
             margin: 0;
@@ -14,346 +18,31 @@
         }
 
         body {
-            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
-            background: linear-gradient(135deg, #1a5c2e 0%, #0d3b1a 100%);
-            color: white;
+            color: #ffffff;
+            position: relative;
             overflow-x: hidden;
         }
 
-        /* Animasi background particles */
-        .bg-particles {
+        .bg-image {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
+            object-fit: cover;
             z-index: 0;
-            overflow: hidden;
         }
 
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 215, 0, 0.3);
-            border-radius: 50%;
-            animation: floatUp linear infinite;
-        }
-
-        @keyframes floatUp {
-            0% {
-                transform: translateY(100vh) scale(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-10vh) scale(1);
-                opacity: 0;
-            }
-        }
-
-        .header {
+        .bg-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(15px);
-            padding: 15px 25px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            z-index: 50;
-            border-bottom: 1px solid rgba(255,215,0,0.2);
-        }
-
-        .back-btn {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,215,0,0.4);
-            padding: 8px 20px;
-            border-radius: 30px;
-            color: #ffd966;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .back-btn:hover {
-            background: rgba(255,215,0,0.2);
-            transform: translateX(-3px);
-            border-color: #ffd966;
-        }
-
-        .page-title {
-            font-size: 1.3rem;
-            letter-spacing: 2px;
-            font-weight: 600;
-        }
-
-        .page-title span {
-            color: #ffd966;
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 100px 25px 50px;
-        }
-
-        .pet-card {
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(15px);
-            border-radius: 40px;
-            padding: 40px;
-            text-align: center;
-            border: 1px solid rgba(255,215,0,0.2);
-            margin-bottom: 30px;
-            opacity: 0;
-            transform: translateY(-30px);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-        }
-
-        .pet-card.loaded {
-            opacity: 1;
-            transform: translateY(0);
-            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .pet-image-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-
-        .pet-image {
-            font-size: 8rem;
-            margin-bottom: 15px;
-            filter: drop-shadow(0 10px 30px rgba(255,215,0,0.2));
-            transition: transform 0.3s ease;
-        }
-
-        .pet-image:hover {
-            transform: scale(1.1) rotate(-5deg);
-        }
-
-        .pet-level-badge {
-            position: absolute;
-            top: -5px;
-            right: -15px;
-            background: linear-gradient(135deg, #ffd966, #ffab00);
-            color: #1a3c2c;
-            font-weight: bold;
-            font-size: 0.8rem;
-            padding: 4px 12px;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(255,215,0,0.3);
-        }
-
-        .pet-name {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #ffd966;
-            margin-bottom: 8px;
-        }
-
-        .pet-stage {
-            display: inline-block;
-            padding: 5px 20px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            margin-bottom: 25px;
-        }
-
-        .stage-egg { background: rgba(156, 163, 175, 0.3); color: #d1d5db; }
-        .stage-baby { background: rgba(59, 130, 246, 0.3); color: #93bbfc; }
-        .stage-adult { background: rgba(147, 51, 234, 0.3); color: #c084fc; }
-        .stage-legendary { background: rgba(234, 179, 8, 0.3); color: #fbbf24; }
-
-        .level-container {
-            margin: 25px 0;
-        }
-
-        .level-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .level-info .level-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .progress-bar {
-            height: 12px;
-            background: rgba(255,255,255,0.15);
-            border-radius: 20px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-fill {
+            width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, #ffd966, #ffab00, #ff8c00);
-            border-radius: 20px;
-            width: 0%;
-            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-        }
-
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        .pet-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 25px 0;
-        }
-
-        .stat {
-            background: rgba(255,255,255,0.08);
-            padding: 15px;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .stat:hover {
-            background: rgba(255,255,255,0.15);
-            transform: translateY(-2px);
-        }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #ffd966;
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            opacity: 0.6;
-            margin-top: 4px;
-        }
-
-        .feed-section {
-            margin-top: 20px;
-        }
-
-        .feed-btn {
-            background: linear-gradient(135deg, #ffd966, #ffab00);
-            border: none;
-            padding: 14px 40px;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #1a3c2c;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(255,215,0,0.2);
-        }
-
-        .feed-btn:hover:not(:disabled) {
-            transform: scale(1.05);
-            box-shadow: 0 8px 30px rgba(255,215,0,0.4);
-        }
-
-        .feed-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .feed-btn:active:not(:disabled) {
-            transform: scale(0.95);
-        }
-
-        .food-points {
-            margin-top: 15px;
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .food-points strong {
-            color: #ffd966;
-        }
-
-        .history-section {
-            background: rgba(0,0,0,0.3);
-            border-radius: 30px;
-            padding: 25px;
-            opacity: 0;
-            transform: translateY(30px);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .history-section.loaded {
-            opacity: 1;
-            transform: translateY(0);
-            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s;
-        }
-
-        .history-title {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            color: #ffd966;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            font-size: 0.9rem;
-        }
-
-        .history-item:last-child {
-            border-bottom: none;
-        }
-
-        .history-item .user-name {
-            color: #ffd966;
-            font-weight: 500;
-        }
-
-        .history-item .history-date {
-            opacity: 0.5;
-            font-size: 0.8rem;
-        }
-
-        .history-empty {
-            text-align: center;
-            opacity: 0.5;
-            padding: 20px 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
         }
 
         .toast {
@@ -362,9 +51,9 @@
             right: 30px;
             padding: 16px 28px;
             border-radius: 16px;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
             font-size: 0.95rem;
             z-index: 100;
@@ -372,7 +61,7 @@
             opacity: 0;
             transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             max-width: 400px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
 
         .toast.show {
@@ -393,32 +82,18 @@
         }
 
         .level-up-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
             display: none;
-            justify-content: center;
-            align-items: center;
+            position: fixed;
+            inset: 0;
             z-index: 200;
-            animation: fadeInOverlay 0.5s ease;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            align-items: center;
+            justify-content: center;
         }
 
         .level-up-overlay.show {
             display: flex;
-        }
-
-        @keyframes fadeInOverlay {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .level-up-content {
-            text-align: center;
-            animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         @keyframes bounceIn {
@@ -426,54 +101,19 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
-        .level-up-content .level-up-emoji {
-            font-size: 6rem;
-            display: block;
-            margin-bottom: 15px;
-        }
-
-        .level-up-content .level-up-title {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #ffd966;
-            margin-bottom: 10px;
-        }
-
-        .level-up-content .level-up-sub {
-            font-size: 1.2rem;
-            opacity: 0.8;
-        }
-
-        .level-up-content .level-up-btn {
-            margin-top: 25px;
-            padding: 12px 40px;
-            background: linear-gradient(135deg, #ffd966, #ffab00);
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: bold;
-            color: #1a3c2c;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .level-up-content .level-up-btn:hover {
-            transform: scale(1.05);
+        .level-up-content {
+            animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .stage-evolution {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
             display: none;
-            justify-content: center;
-            align-items: center;
+            position: fixed;
+            inset: 0;
             z-index: 200;
-            animation: fadeInOverlay 0.5s ease;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            align-items: center;
+            justify-content: center;
         }
 
         .stage-evolution.show {
@@ -481,92 +121,41 @@
         }
 
         .stage-evolution-content {
-            text-align: center;
             animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .stage-evolution-content .evo-emoji {
-            font-size: 7rem;
-            display: block;
-            margin-bottom: 15px;
-        }
-
-        .stage-evolution-content .evo-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #ffd966;
-            margin-bottom: 10px;
-        }
-
-        .stage-evolution-content .evo-sub {
-            font-size: 1.2rem;
-            opacity: 0.8;
-        }
-
-        .stage-evolution-content .evo-btn {
-            margin-top: 25px;
-            padding: 12px 40px;
-            background: linear-gradient(135deg, #ffd966, #ffab00);
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: bold;
-            color: #1a3c2c;
-            cursor: pointer;
+        .stat-card {
             transition: all 0.3s ease;
         }
 
-        .stage-evolution-content .evo-btn:hover {
-            transform: scale(1.05);
+        .stat-card:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
         }
 
-        @media (max-width: 640px) {
-            .header {
-                padding: 12px 15px;
-                gap: 12px;
-                flex-wrap: wrap;
-            }
-            .back-btn {
-                font-size: 0.75rem;
-                padding: 6px 14px;
-            }
-            .page-title {
-                font-size: 1rem;
-            }
-            .pet-image { font-size: 5rem; }
-            .pet-name { font-size: 1.4rem; }
-            .pet-stats { gap: 10px; }
-            .stat-value { font-size: 1.2rem; }
-            .pet-card { padding: 25px; }
-            .container { padding: 85px 15px 30px; }
-            .feed-btn {
-                padding: 12px 25px;
-                font-size: 0.95rem;
-            }
-            .toast {
-                bottom: 15px;
-                right: 15px;
-                left: 15px;
-                max-width: none;
-                padding: 14px 20px;
-                font-size: 0.85rem;
-            }
-            .level-up-content .level-up-emoji { font-size: 4rem; }
-            .level-up-content .level-up-title { font-size: 2rem; }
-            .stage-evolution-content .evo-emoji { font-size: 4rem; }
-            .stage-evolution-content .evo-title { font-size: 1.8rem; }
+        .history-item {
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .stage-egg { background: rgba(156, 163, 175, 0.3); color: #d1d5db; }
+        .stage-baby { background: rgba(59, 130, 246, 0.3); color: #93bbfc; }
+        .stage-adult { background: rgba(147, 51, 234, 0.3); color: #c084fc; }
+        .stage-legendary { background: rgba(234, 179, 8, 0.3); color: #fbbf24; }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
     </style>
 </head>
 <body>
-    <!-- Background Particles -->
-    <div class="bg-particles" id="bgParticles"></div>
-
-    <!-- Header -->
-    <div class="header">
-        <button class="back-btn" onclick="goBack()">← Kembali ke Peta</button>
-        <div class="page-title">🌊 <span>Muaralaya</span> · Pet</div>
-    </div>
+    <!-- Background -->
+    <img src="{{ asset('images/background/muaralaya-bg.png') }}" alt="Background" class="bg-image">
+    <div class="bg-overlay"></div>
 
     <!-- Toast Notification -->
     <div class="toast" id="toast">
@@ -576,93 +165,129 @@
 
     <!-- Level Up Overlay -->
     <div class="level-up-overlay" id="levelUpOverlay">
-        <div class="level-up-content">
-            <span class="level-up-emoji" id="levelUpEmoji">🎉</span>
-            <div class="level-up-title">LEVEL UP!</div>
-            <div class="level-up-sub" id="levelUpSub">Pet sekarang level <strong id="levelUpLevel">2</strong></div>
-            <button class="level-up-btn" onclick="closeLevelUp()">🎊 Lanjutkan</button>
+        <div class="level-up-content text-center">
+            <i class="fas fa-trophy text-7xl md:text-8xl text-yellow-400 block mb-4"></i>
+            <div class="text-4xl md:text-5xl font-bold text-yellow-400 mb-3">LEVEL UP!</div>
+            <div class="text-lg md:text-xl text-white/80" id="levelUpSub">Pet sekarang level <strong id="levelUpLevel" class="text-yellow-400">2</strong></div>
+            <button onclick="closeLevelUp()" class="mt-6 px-8 py-3 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full text-sm font-bold text-[#1a3c2c] hover:scale-105 transition-all duration-300">🎊 Lanjutkan</button>
         </div>
     </div>
 
     <!-- Stage Evolution Overlay -->
     <div class="stage-evolution" id="stageEvolution">
-        <div class="stage-evolution-content">
-            <span class="evo-emoji" id="evoEmoji">🌟</span>
-            <div class="evo-title" id="evoTitle">EVOLUSI!</div>
-            <div class="evo-sub" id="evoSub">Pet berevolusi menjadi <strong id="evoStageName">Bayi</strong></div>
-            <button class="evo-btn" onclick="closeEvolution()">🎊 Lihat Perubahan!</button>
+        <div class="stage-evolution-content text-center">
+            <i class="fas fa-star text-8xl md:text-9xl text-yellow-400 block mb-4" id="evoEmoji"></i>
+            <div class="text-4xl md:text-5xl font-bold text-yellow-400 mb-3" id="evoTitle">EVOLUSI!</div>
+            <div class="text-lg md:text-xl text-white/80" id="evoSub">Pet berevolusi menjadi <strong id="evoStageName" class="text-yellow-400">Bayi</strong></div>
+            <button onclick="closeEvolution()" class="mt-6 px-8 py-3 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full text-sm font-bold text-[#1a3c2c] hover:scale-105 transition-all duration-300">🎊 Lihat Perubahan!</button>
         </div>
     </div>
+
+    <!-- Back Button -->
+    <button onclick="goBack()" 
+            class="fixed top-6 left-6 md:top-8 md:left-8 z-50 bg-[url('{{ asset('images/button/btn-back.png') }}')] bg-contain bg-center bg-no-repeat border-none w-[200px] h-[70px] text-white text-[0.8rem] font-medium tracking-[0.05em] transition-all duration-300 hover:scale-105 hover:brightness-110 active:scale-95 inline-flex items-center justify-center text-shadow-[0_2px_10px_rgba(0,0,0,0.7)] max-sm:w-[140px] max-sm:h-[50px] max-sm:text-[0.6rem]">
+        ← Kembali
+    </button>
 
     <!-- Main Content -->
-    <div class="container">
-        <div class="pet-card" id="petCard">
-            <div class="pet-image-wrapper">
-                <div class="pet-image" id="petImage">🐙</div>
-                <div class="pet-level-badge" id="petLevelBadge">Lv. 0</div>
-            </div>
-            <div class="pet-name" id="petName">Pet Kelompok</div>
-            <div class="pet-stage" id="petStage">🥚 Telur</div>
+    <main class="relative z-[2] w-full min-h-screen flex items-center justify-center px-5 md:px-10 py-20">
+        <div class="w-full max-w-4xl mx-auto" id="contentWrapper">
 
-            <div class="level-container">
-                <div class="level-info">
-                    <span class="level-label">⬆ Level <span id="petLevel">0</span></span>
-                    <span><span id="petExp">0</span> / <span id="petExpNeeded">100</span> EXP</span>
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/15 border border-white/15 mb-5">
+                    <i class="fas fa-paw text-2xl text-white"></i>
                 </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="expBar" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <div class="pet-stats">
-                <div class="stat">
-                    <div class="stat-value" id="foodPoints">0</div>
-                    <div class="stat-label">🍖 Food Points</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value" id="petType">🐙</div>
-                    <div class="stat-label">Tipe Pet</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value" id="petStageBadge">🥚</div>
-                    <div class="stat-label">Stage</div>
-                </div>
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-3 tracking-tight">
+                    Muaralaya
+                </h1>
+                <p class="text-base text-white/70 max-w-md mx-auto leading-relaxed font-light">
+                    Pelihara dan rawat pet kelompokmu
+                </p>
+                @if($groupName ?? false)
+                    <div class="mt-3 inline-flex items-center gap-2 text-sm text-white/50 bg-white/10 px-4 py-1.5 rounded-full">
+                        <i class="fas fa-users text-xs"></i>
+                        <span>{{ $groupName }}</span>
+                    </div>
+                @endif
             </div>
 
-            <div class="feed-section">
-                <button class="feed-btn" id="feedBtn" onclick="feedPet()">🍖 Beri Makan (10 FP)</button>
-                <div class="food-points">Food Points tersisa: <strong id="userFoodPoints">0</strong></div>
+            <!-- Pet Display -->
+            <div class="text-center mb-8">
+                <div class="relative inline-block">
+                    <img id="petImage" src="{{ asset('images/pets/gurita/telur/gurita.png') }}" 
+                         alt="Pet" class="w-40 h-40 md:w-48 md:h-48 object-contain drop-shadow-[0_10px_30px_rgba(255,215,0,0.15)] hover:scale-110 hover:rotate-[-5deg] transition-all duration-300">
+                    <div class="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-amber-500 text-[#1a3c2c] font-bold text-xs px-3 py-1 rounded-full shadow-lg shadow-yellow-400/30" id="petLevelBadge">
+                        Lv. 0
+                    </div>
+                </div>
+                <div class="text-2xl font-bold text-yellow-400 mb-1 mt-2" id="petName">Pet Kelompok</div>
+                <div class="inline-block px-4 py-1.5 rounded-full text-sm font-medium stage-egg" id="petStage">Telur</div>
+
+                <!-- Level Progress -->
+                <div class="max-w-md mx-auto mt-4">
+                    <div class="flex justify-between text-sm text-white/80 mb-1.5">
+                        <span class="flex items-center gap-2">⬆ Level <span id="petLevel" class="font-bold text-white">0</span></span>
+                        <span><span id="petExp" class="font-bold text-white">0</span> / <span id="petExpNeeded" class="font-bold text-white">100</span> EXP</span>
+                    </div>
+                    <div class="w-full h-3 bg-white/10 rounded-full overflow-hidden relative">
+                        <div class="h-full bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-500 rounded-full transition-all duration-500 relative" 
+                             id="expBar" style="width: 0%">
+                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-[shimmer_2s_infinite]"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-3 gap-4 max-w-2xl mx-auto mb-8">
+                <div class="stat-card bg-[url('{{ asset('images/card/card-stat.png') }}')] bg-[length:100%_100%] bg-center bg-no-repeat border-none p-4 min-h-[80px] flex flex-col items-center justify-center text-center rounded-[16px] md:rounded-[20px]">
+                    <div class="text-xl md:text-2xl font-bold text-yellow-400" id="foodPoints">0</div>
+                    <div class="text-[0.6rem] text-white/50 font-light mt-0.5"><i class="fas fa-drumstick-bite mr-1"></i>Food Points</div>
+                </div>
+                <div class="stat-card bg-[url('{{ asset('images/card/card-stat.png') }}')] bg-[length:100%_100%] bg-center bg-no-repeat border-none p-4 min-h-[80px] flex flex-col items-center justify-center text-center rounded-[16px] md:rounded-[20px]">
+                    <div class="text-xl md:text-2xl font-bold text-yellow-400" id="petType"><i class="fas fa-paw"></i></div>
+                    <div class="text-[0.6rem] text-white/50 font-light mt-0.5"><i class="fas fa-tag mr-1"></i>Tipe Pet</div>
+                </div>
+                <div class="stat-card bg-[url('{{ asset('images/card/card-stat.png') }}')] bg-[length:100%_100%] bg-center bg-no-repeat border-none p-4 min-h-[80px] flex flex-col items-center justify-center text-center rounded-[16px] md:rounded-[20px]">
+                    <div class="text-xl md:text-2xl font-bold text-yellow-400" id="petStageBadge"><i class="fas fa-egg"></i></div>
+                    <div class="text-[0.6rem] text-white/50 font-light mt-0.5"><i class="fas fa-arrow-up mr-1"></i>Stage</div>
+                </div>
+            </div>
+
+            <!-- Feed Button -->
+            <div class="text-center mb-8">
+                <button onclick="feedPet()" id="feedBtn" 
+                        class="px-8 py-3 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full text-sm font-bold text-[#1a3c2c] hover:scale-105 hover:shadow-lg hover:shadow-yellow-400/30 active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">
+                    <i class="fas fa-utensils mr-2"></i>Beri Makan (10 FP)
+                </button>
+                <div class="text-sm text-white/60 mt-3">Food Points tersisa: <strong class="text-yellow-400" id="userFoodPoints">0</strong></div>
+            </div>
+
+            <!-- History -->
+            <div class="max-w-2xl mx-auto">
+                <div class="history-card bg-[url('{{ asset('images/card/card-history.png') }}')] bg-[length:100%_100%] bg-center bg-no-repeat border-none p-5 md:p-6 rounded-[16px] md:rounded-[20px]">
+                    <div class="flex items-center gap-2 text-yellow-400 text-sm font-medium mb-4">
+                        <i class="fas fa-clock-rotate-left"></i>
+                        <span>Riwayat Makan</span>
+                    </div>
+                    <div id="historyList">
+                        <div class="text-center text-white/40 py-4 text-sm"><i class="fas fa-spinner fa-spin mr-2"></i>Memuat riwayat...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="flex items-center justify-center gap-4 mt-10">
+                <div class="w-8 h-px bg-white/20"></div>
+                <i class="fas fa-compass text-white/20 text-xs"></i>
+                <div class="w-8 h-px bg-white/20"></div>
+            </div>
+
         </div>
-
-        <div class="history-section" id="historySection">
-            <div class="history-title">📜 Riwayat Makan</div>
-            <div id="historyList">
-                <div class="history-empty">Memuat riwayat...</div>
-            </div>
-        </div>
-    </div>
+    </main>
 
     <script>
-        // ============================================================
-        //  BACKGROUND PARTICLES
-        // ============================================================
-        (function createParticles() {
-            const container = document.getElementById('bgParticles');
-            const count = 30;
-            for (let i = 0; i < count; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.width = (2 + Math.random() * 4) + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.animationDuration = (10 + Math.random() * 20) + 's';
-                particle.style.animationDelay = (Math.random() * 20) + 's';
-                particle.style.opacity = 0.2 + Math.random() * 0.3;
-                container.appendChild(particle);
-            }
-        })();
-
         // ============================================================
         //  TOAST NOTIFICATION
         // ============================================================
@@ -690,9 +315,8 @@
         //  LEVEL UP
         // ============================================================
         function showLevelUp(newLevel) {
-            const overlay = document.getElementById('levelUpOverlay');
             document.getElementById('levelUpLevel').textContent = newLevel;
-            overlay.classList.add('show');
+            document.getElementById('levelUpOverlay').classList.add('show');
         }
 
         function closeLevelUp() {
@@ -703,24 +327,12 @@
         //  STAGE EVOLUTION
         // ============================================================
         function showEvolution(oldStage, newStage) {
-            const overlay = document.getElementById('stageEvolution');
-            const emojiMap = {
-                'egg': '🥚',
-                'baby': '🐣',
-                'adult': '🦅',
-                'legendary': '👑'
-            };
-            const nameMap = {
-                'egg': 'Telur',
-                'baby': 'Bayi',
-                'adult': 'Dewasa',
-                'legendary': 'Legendaris'
-            };
+            const emojiMap = { egg: '🥚', baby: '🐣', adult: '🦅', legendary: '👑' };
+            const nameMap = { egg: 'Telur', baby: 'Bayi', adult: 'Dewasa', legendary: 'Legendaris' };
             
             document.getElementById('evoEmoji').textContent = emojiMap[newStage] || '🌟';
-            document.getElementById('evoTitle').textContent = '🌟 EVOLUSI!';
             document.getElementById('evoStageName').textContent = nameMap[newStage] || newStage;
-            overlay.classList.add('show');
+            document.getElementById('stageEvolution').classList.add('show');
         }
 
         function closeEvolution() {
@@ -731,15 +343,7 @@
         //  GO BACK
         // ============================================================
         function goBack() {
-            gsap.to('body', {
-                duration: 0.4,
-                opacity: 0,
-                y: 20,
-                ease: "power2.in",
-                onComplete: () => {
-                    window.location.href = "{{ route('student.map') }}";
-                }
-            });
+            window.location.href = "{{ route('student.map') }}";
         }
 
         // ============================================================
@@ -747,12 +351,17 @@
         // ============================================================
         function updatePetUI(data) {
             document.getElementById('petName').textContent = data.name;
-            document.getElementById('petImage').textContent = data.emoji;
+            
+            const img = document.getElementById('petImage');
+            if (data.image_url) {
+                img.src = data.image_url;
+            }
+            
             document.getElementById('petLevelBadge').textContent = 'Lv. ' + data.level;
 
             const stageEl = document.getElementById('petStage');
             stageEl.textContent = data.stage_name;
-            stageEl.className = 'pet-stage stage-' + data.stage;
+            stageEl.className = 'inline-block px-4 py-1.5 rounded-full text-sm font-medium stage-' + data.stage;
 
             document.getElementById('petLevel').textContent = data.level;
             document.getElementById('petExp').textContent = data.experience;
@@ -761,8 +370,9 @@
 
             document.getElementById('foodPoints').textContent = data.food_points;
             document.getElementById('userFoodPoints').textContent = data.food_points;
-            document.getElementById('petType').textContent = data.emoji;
-            document.getElementById('petStageBadge').textContent = data.stage_name;
+            
+            document.getElementById('petType').innerHTML = data.icon || '<i class="fas fa-paw"></i>';
+            document.getElementById('petStageBadge').innerHTML = data.stage_icon || '<i class="fas fa-egg"></i>';
         }
 
         // ============================================================
@@ -794,22 +404,22 @@
                     const list = document.getElementById('historyList');
                     if (data.success && data.data.length > 0) {
                         list.innerHTML = data.data.map(item => `
-                            <div class="history-item">
+                            <div class="history-item flex justify-between items-center py-2 border-b border-white/5 last:border-0">
                                 <span>
-                                    <span class="user-name">${item.user_name}</span>
-                                    memberi makan
-                                    <strong>-${item.food_amount} FP</strong>
+                                    <span class="text-yellow-400 font-medium">${item.user_name}</span>
+                                    <span class="text-white/60 text-sm">memberi makan</span>
+                                    <strong class="text-white/80 text-sm">-${item.food_amount} FP</strong>
                                 </span>
-                                <span class="history-date">${item.date}</span>
+                                <span class="text-white/40 text-xs">${item.date}</span>
                             </div>
                         `).join('');
                     } else {
-                        list.innerHTML = '<div class="history-empty">Belum ada riwayat memberi makan</div>';
+                        list.innerHTML = '<div class="text-center text-white/40 py-4 text-sm"><i class="fas fa-inbox mr-2"></i>Belum ada riwayat memberi makan</div>';
                     }
                 })
                 .catch(err => {
                     console.error('Error:', err);
-                    document.getElementById('historyList').innerHTML = '<div class="history-empty">Gagal memuat riwayat</div>';
+                    document.getElementById('historyList').innerHTML = '<div class="text-center text-white/40 py-4 text-sm"><i class="fas fa-exclamation-circle mr-2"></i>Gagal memuat riwayat</div>';
                 });
         }
 
@@ -819,7 +429,7 @@
         function feedPet() {
             const btn = document.getElementById('feedBtn');
             btn.disabled = true;
-            btn.textContent = '⏳ Memproses...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memproses...';
 
             fetch('/student/api/pet-feed', {
                 method: 'POST',
@@ -832,33 +442,19 @@
             .then(data => {
                 if (data.success) {
                     showToast(data.message, 'success');
-
-                    // Update UI dengan data terbaru dari response
                     updatePetUI(data.pet);
-
-                    // Update food points
                     document.getElementById('foodPoints').textContent = data.food_points;
                     document.getElementById('userFoodPoints').textContent = data.food_points;
 
-                    // Cek level up
                     if (data.level_up) {
-                        setTimeout(() => {
-                            showLevelUp(data.pet.level);
-                        }, 500);
+                        setTimeout(() => showLevelUp(data.pet.level), 500);
                     }
 
-                    // Cek stage change
                     if (data.stage_changed && data.new_stage) {
-                        setTimeout(() => {
-                            showEvolution(data.old_stage, data.new_stage);
-                        }, 800);
+                        setTimeout(() => showEvolution(data.old_stage, data.new_stage), 800);
                     }
 
-                    // Refresh history
-                    setTimeout(() => {
-                        loadHistory();
-                    }, 300);
-
+                    setTimeout(() => loadHistory(), 300);
                 } else {
                     showToast(data.message, 'error');
                 }
@@ -869,7 +465,7 @@
             })
             .finally(() => {
                 btn.disabled = false;
-                btn.textContent = '🍖 Beri Makan (10 FP)';
+                btn.innerHTML = '<i class="fas fa-utensils mr-2"></i>Beri Makan (10 FP)';
             });
         }
 
@@ -891,29 +487,86 @@
         });
 
         // ============================================================
-        //  INIT
+        //  INIT - GSAP DIPERBAIKI
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
-            // Animasi masuk dengan GSAP
-            gsap.fromTo('#petCard', 
-                { y: -30, opacity: 0 }, 
-                { duration: 0.6, y: 0, opacity: 1, ease: "back.out", delay: 0.2 }
-            );
-            gsap.fromTo('#historySection', 
-                { y: 30, opacity: 0 }, 
-                { duration: 0.6, y: 0, opacity: 1, ease: "back.out", delay: 0.4 }
-            );
+            // ✅ Pakai selector sederhana, bukan complex
+            gsap.from('#petImage', {
+                duration: 0.6,
+                y: 30,
+                opacity: 1,
+                ease: "power2.out",
+                delay: 0.1
+            });
 
-            // Load data dari API
+            gsap.from('#petName', {
+                duration: 0.5,
+                y: 20,
+                opacity: 1,
+                ease: "power2.out",
+                delay: 0.2
+            });
+
+            gsap.from('#petStage', {
+                duration: 0.5,
+                y: 20,
+                opacity: 1,
+                ease: "power2.out",
+                delay: 0.25
+            });
+
+            gsap.from('.max-w-md', {
+                duration: 0.5,
+                y: 20,
+                opacity: 1,
+                ease: "power2.out",
+                delay: 0.3
+            });
+
+            gsap.from('.stat-card', {
+                duration: 0.5,
+                y: 20,
+                opacity: 1,
+                ease: "power2.out",
+                delay: 0.35,
+                stagger: 0.08
+            });
+
+            gsap.from('#feedBtn', {
+                duration: 0.4,
+                y: 15,
+                opacity: 1,
+                ease: "power2.out",
+                delay: 0.5
+            });
+
+            // ✅ Pakai class 'history-card' (tambahkan class di HTML)
+            gsap.from('.history-card', {
+                duration: 0.5,
+                y: 20,
+                opacity: 1,
+                ease: "power2.out",
+                delay: 0.6
+            });
+
+            gsap.from('.text-center h1, .text-center p, .text-center .inline-flex', {
+                duration: 0.5,
+                y: 20,
+                opacity: 1,
+                ease: "power2.out",
+                delay: 0.05,
+                stagger: 0.08
+            });
+
+            gsap.from('.flex.items-center.justify-center.gap-4.mt-10', {
+                duration: 0.4,
+                opacity: 1,
+                ease: "power2.out",
+                delay: 0.7
+            });
+
             loadPetData();
             loadHistory();
-
-            // Animate card
-            const card = document.getElementById('petCard');
-            card.classList.add('loaded');
-
-            const history = document.getElementById('historySection');
-            setTimeout(() => history.classList.add('loaded'), 300);
         });
 
         console.log('🌊 Muaralaya - Pulau Pet siap!');

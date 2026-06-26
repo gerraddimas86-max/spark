@@ -109,6 +109,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/pet-history', [App\Http\Controllers\Student\MuaralayaController::class, 'getFeedHistory'])->name('pet.history');
             Route::get('/pet-types', [App\Http\Controllers\Student\MuaralayaController::class, 'getPetTypes'])->name('pet.types');
             Route::post('/pet-change-type', [App\Http\Controllers\Student\MuaralayaController::class, 'changePetType'])->name('pet.change-type');
+            Route::post('/pet-feed', [App\Http\Controllers\Student\MuaralayaController::class, 'feed'])->name('pet.feed'); // 🔥 TAMBAHKAN INI
         });
     });
 });

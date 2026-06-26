@@ -61,29 +61,36 @@
             justify-content: center;
         }
 
-        /* ===== BACK BUTTON (minimalis) ===== */
+        /* ===== BACK BUTTON dengan background image ===== */
         .back-btn {
             position: fixed;
             top: 30px;
             left: 30px;
             z-index: 10;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 10px 24px;
-            border-radius: 30px;
+            background: url('{{ asset("images/button/btn-back.png") }}') no-repeat center center;
+            background-size: contain;
+            border: none;
+            width: 170px;
+            height: 70px;
             color: #ffffff;
             cursor: pointer;
             font-size: 0.8rem;
-            font-weight: 400;
+            font-weight: 500;
             letter-spacing: 0.05em;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
         }
 
         .back-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateX(-3px);
+            transform: translateX(-3px) scale(1.03);
+            filter: brightness(1.1);
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
         }
 
         /* ===== PULAU-PULAU ===== */
@@ -213,7 +220,8 @@
             .back-btn {
                 top: 20px;
                 left: 20px;
-                padding: 8px 18px;
+                width: 120px;
+                height: 42px;
                 font-size: 0.7rem;
             }
 
@@ -275,8 +283,9 @@
             .back-btn {
                 top: 15px;
                 left: 15px;
-                padding: 6px 14px;
-                font-size: 0.65rem;
+                width: 100px;
+                height: 36px;
+                font-size: 0.6rem;
             }
 
             .islands-wrapper {
@@ -351,7 +360,7 @@
     <div class="map-background"></div>
     <div class="map-overlay"></div>
 
-    <!-- ===== BACK BUTTON ===== -->
+    <!-- ===== BACK BUTTON dengan background image ===== -->
     <button class="back-btn" onclick="goBack()">← Kembali</button>
 
     <!-- ===== TITLE ===== -->
