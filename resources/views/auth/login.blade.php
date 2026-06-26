@@ -25,9 +25,8 @@
     
     <style>
         /* =============================================
-           CUSTOM CSS
+           CUSTOM CSS - Minimal
            ============================================= */
-        * { font-family: 'Inter', sans-serif; }
         
         /* Font Battlesbridge */
         @font-face {
@@ -194,329 +193,6 @@
             opacity: 0.15;
             filter: blur(40px);
         }
-        
-        /* Form Card */
-        .form-card {
-            width: 400px;
-            height: 545px;
-            background-image: url('{{ asset("images/card-bg.jpg") }}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            border-radius: 1rem;
-            position: relative;
-            box-shadow: none;
-        }
-        
-        .form-content {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            padding: 6rem 6rem 6rem 6rem;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .input-field-card {
-            transition: all 0.3s ease;
-            background-image: url('{{ asset("images/input-bg.png") }}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            border: none;
-            color: #ffffff;
-            padding: 0.7rem 1rem 0.7rem 2.5rem;
-        }
-        
-        .input-field-card:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
-        }
-        
-        .input-field-card::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        
-        .login-btn-card {
-            position: relative;
-            background-image: url('{{ asset("images/button-bg.png") }}');
-            background-size: 100% 100%;
-            background-position: center;
-            background-repeat: no-repeat;
-            color: #ffffff;
-            font-weight: 600;
-            border: none;
-            padding: 0;
-            transition: transform 0.3s ease;
-            height: 120px;
-            width: 100%;
-            cursor: pointer;
-            background-color: transparent;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .login-btn-card:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.05);
-        }
-        
-        .info-box {
-            background-image: url('{{ asset("images/info-bg.png") }}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            border-radius: 0.75rem;
-            padding: 0.6rem 1rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.625rem;
-        }
-        
-        .info-icon {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 10px;
-            flex-shrink: 0;
-        }
-        
-        .info-text {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.4;
-            margin: 0;
-        }
-        
-        .info-text span {
-            font-weight: 600;
-            color: white;
-        }
-        
-        .input-wrapper {
-            position: relative;
-        }
-        
-        .input-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 12px;
-            z-index: 2;
-        }
-        
-        /* Spark Title - Tengah sejajar pet card */
-        .spark-center-title {
-            font-family: 'Battlesbridge', sans-serif;
-            font-size: 4.5rem;
-            color: rgba(255, 255, 255, 0.95);
-            text-shadow: 0 4px 40px rgba(255, 255, 255, 0.08);
-            letter-spacing: 4px;
-            line-height: 1;
-            text-align: center;
-            margin-bottom: 0.5rem;
-        }
-        
-        .spark-center-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-        }
-        
-        /* Mobile styles */
-        .desktop-only {
-            display: flex;
-        }
-        
-        .mobile-only {
-            display: none;
-        }
-        
-        @media (max-width: 768px) {
-            .desktop-only {
-                display: none !important;
-            }
-            
-            .mobile-only {
-                display: block !important;
-            }
-            
-            html, body {
-                overflow: auto;
-                height: auto;
-                min-height: 100vh;
-                background: #0a0a1a;
-            }
-            
-            .mobile-container {
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 1rem;
-            }
-            
-            .mobile-card {
-                width: 380px;
-                height: 545px;
-                margin: 0 auto;
-                background-image: url('{{ asset("images/card-bg.jpg") }}');
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
-                border-radius: 1rem;
-                position: relative;
-                box-shadow: none;
-            }
-            
-            .mobile-form-content {
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                padding: 6rem 6rem 6rem 6rem;
-                display: flex;
-                flex-direction: column;
-            }
-            
-            .mobile-info-box {
-                background-image: url('{{ asset("images/info-bg.png") }}');
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
-                border-radius: 0.75rem;
-                padding: 0.6rem 1rem;
-                margin-bottom: 1rem;
-                display: flex;
-                align-items: center;
-                gap: 0.625rem;
-            }
-            
-            .mobile-info-icon {
-                color: rgba(255, 255, 255, 0.8);
-                font-size: 10px;
-                flex-shrink: 0;
-            }
-            
-            .mobile-info-text {
-                font-size: 11px;
-                color: rgba(255, 255, 255, 0.9);
-                line-height: 1.4;
-                margin: 0;
-            }
-            
-            .mobile-info-text span {
-                font-weight: 600;
-                color: white;
-            }
-            
-            .mobile-input-field {
-                transition: all 0.3s ease;
-                background-image: url('{{ asset("images/input-bg.png") }}');
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
-                border: none;
-                color: #ffffff;
-                padding: 0.7rem 1rem 0.7rem 2.5rem;
-                width: 100%;
-                border-radius: 0.75rem;
-            }
-            
-            .mobile-input-field:focus {
-                outline: none;
-                box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
-            }
-            
-            .mobile-input-field::placeholder {
-                color: rgba(255, 255, 255, 0.7);
-            }
-            
-            .mobile-login-btn {
-                position: relative;
-                background-image: url('{{ asset("images/button-bg.png") }}');
-                background-size: 100% 100%;
-                background-position: center;
-                background-repeat: no-repeat;
-                color: #ffffff;
-                font-weight: 600;
-                border: none;
-                padding: 0;
-                transition: transform 0.3s ease;
-                height: 120px;
-                width: 100%;
-                cursor: pointer;
-                background-color: transparent;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            
-            .mobile-login-btn:hover {
-                transform: translateY(-2px);
-                filter: brightness(1.05);
-            }
-            
-            .mobile-label {
-                display: block;
-                font-size: 0.75rem;
-                font-weight: 600;
-                color: rgba(255, 255, 255, 0.9);
-                margin-bottom: 0.5rem;
-            }
-            
-            .mobile-input-wrapper {
-                position: relative;
-            }
-            
-            .mobile-input-icon {
-                position: absolute;
-                left: 12px;
-                top: 50%;
-                transform: translateY(-50%);
-                color: rgba(255, 255, 255, 0.7);
-                font-size: 12px;
-                z-index: 2;
-            }
-            
-            .mobile-checkbox {
-                display: flex;
-                align-items: center;
-                gap: 0.375rem;
-                cursor: pointer;
-            }
-            
-            .mobile-checkbox input {
-                width: 0.875rem;
-                height: 0.875rem;
-                border-radius: 0.25rem;
-                border-color: rgba(255, 255, 255, 0.4);
-                background-color: rgba(255, 255, 255, 0.1);
-            }
-            
-            .mobile-form-group {
-                margin-bottom: 0.75rem;
-            }
-            
-            .mobile-spark-center-title {
-                font-family: 'Battlesbridge', sans-serif;
-                font-size: 2.8rem;
-                color: rgba(255, 255, 255, 0.95);
-                text-shadow: 0 4px 40px rgba(255, 255, 255, 0.08);
-                letter-spacing: 4px;
-                line-height: 1;
-                text-align: center;
-                margin-bottom: 1.5rem;
-                display: none;
-            }
-        }
     </style>
 </head>
 <body>
@@ -549,16 +225,17 @@
         <!-- LEFT: Pet Only -->
         <div class="w-full lg:w-3/5 relative flex flex-col h-full p-6 lg:p-8">
             
-            <!-- SPARK Title di tengah sejajar pet card -->
+            <!-- SPARK Title -->
             <div class="flex-1 flex items-center justify-center">
-                <div class="spark-center-wrapper animate-fade-in-up" style="animation-delay: 0.1s;">
-                    <div class="spark-center-title">SPARK</div>
-                    <!-- Garis dekoratif di bawah SPARK -->
+                <div class="flex flex-col items-center justify-center h-full animate-fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="text-[4.5rem] font-normal text-white/95 tracking-[0.08em] leading-none text-center mb-2" style="font-family: 'Battlesbridge', sans-serif;">
+                        SPARK
+                    </div>
                     <div class="w-16 h-0.5 bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-full"></div>
                 </div>
             </div>
             
-            <!-- Bagian 2: Pet Card -->
+            <!-- Pet Card -->
             <div class="flex-1 flex items-center justify-center">
                 <div class="relative bg-white/5 border border-white/10 rounded-[2rem] p-6 pt-8 overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-0.5 animate-scale-in w-full max-w-[400px]" style="animation-delay: 0.2s;">
                     <div class="absolute w-16 h-16 -top-5 -right-5 rounded-full bg-white/5 animate-float-bubble pointer-events-none"></div>
@@ -570,17 +247,10 @@
                         <div class="absolute inset-[-8px] rounded-full border border-white/10 animate-pulse-ring"></div>
                         <div class="absolute inset-[-16px] rounded-full border border-white/5 animate-pulse-ring" style="animation-delay: 1.5s;"></div>
                         
-                        @if($randomPet['type'] === 'ghost')
-                            <img id="pet-image" 
-                                 src="{{ asset('images/pets/ghost/ghost.png') }}" 
-                                 alt="{{ $randomPet['name'] }}"
-                                 class="relative w-full h-full object-contain drop-shadow-2xl animate-float-slow z-10 transition-all duration-500 hover:scale-105">
-                        @else
-                            <img id="pet-image" 
-                                 src="{{ asset('images/pets/' . $randomPet['image']) }}" 
-                                 alt="{{ $randomPet['name'] }}"
-                                 class="relative w-full h-full object-contain drop-shadow-2xl animate-float-slow z-10 transition-all duration-500 hover:scale-105">
-                        @endif
+                        <img id="pet-image" 
+                        src="{{ asset('images/pets/' . $randomPet['image']) }}" 
+                        alt="{{ $randomPet['name'] }}"
+                        class="relative w-full h-full object-contain drop-shadow-2xl animate-float-slow z-10 transition-all duration-500 hover:scale-105">
                     </div>
                     
                     <div class="text-center mt-4">
@@ -603,29 +273,31 @@
         
         <!-- RIGHT: Login Form -->
         <div class="w-full lg:w-2/5 flex flex-col items-center justify-center p-6 lg:p-8 h-full">
-            <div class="form-card animate-fade-in-up" style="animation-delay: 0.2s;">
-                <div class="form-content">
-                    <div class="info-box">
-                        <i class="fas fa-info-circle info-icon"></i>
-                        <p class="info-text">
-                            Login dengan <span>NIM</span> (Mahasiswa) atau <span>Email</span> (Mentor/Developer)
+            <div class="w-[400px] h-[545px] bg-[url('{{ asset('images/card-bg.jpg') }}')] bg-cover bg-center bg-no-repeat rounded-2xl relative shadow-none animate-fade-in-up" style="animation-delay: 0.2s;">
+                <div class="absolute inset-0 p-24 flex flex-col">
+                    <!-- Info Box -->
+                    <div class="bg-[url('{{ asset('images/info-bg.png') }}')] bg-cover bg-center bg-no-repeat rounded-xl px-4 py-2.5 mb-4 flex items-center gap-2.5">
+                        <i class="fas fa-info-circle text-[10px] text-white/80 flex-shrink-0"></i>
+                        <p class="text-[11px] text-white/90 leading-snug m-0">
+                            Login dengan <span class="font-semibold text-white">NIM</span> (Mahasiswa) atau <span class="font-semibold text-white">Email</span> (Mentor/Developer)
                         </p>
                     </div>
 
                     <form method="POST" action="{{ route('login') }}" class="flex-1 flex flex-col gap-3">
                         @csrf
+                        <!-- NIM/Email -->
                         <div>
                             <label for="login" class="block text-xs font-semibold text-white/90 mb-1.5 drop-shadow-sm">
                                 NIM atau Email
                             </label>
-                            <div class="input-wrapper">
-                                <i class="fas fa-user input-icon"></i>
+                            <div class="relative">
+                                <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-white/70 text-xs z-10"></i>
                                 <input 
                                     id="login" 
                                     type="text" 
                                     name="login" 
                                     value="{{ old('login') }}"
-                                    class="input-field-card w-full rounded-xl text-sm focus:outline-none"
+                                    class="w-full bg-[url('{{ asset('images/input-bg.png') }}')] bg-cover bg-center bg-no-repeat border-none text-white text-sm px-9 py-2.5 rounded-xl transition-all duration-300 focus:outline-none focus:shadow-[0_0_0_2px_rgba(255,255,255,0.3)] placeholder:text-white/70"
                                     placeholder="Masukkan NIM atau email"
                                     required 
                                     autofocus
@@ -636,17 +308,18 @@
                             @enderror
                         </div>
 
+                        <!-- Password -->
                         <div>
                             <label for="password" class="block text-xs font-semibold text-white/90 mb-1.5 drop-shadow-sm">
                                 Password
                             </label>
-                            <div class="input-wrapper">
-                                <i class="fas fa-lock input-icon"></i>
+                            <div class="relative">
+                                <i class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-white/70 text-xs z-10"></i>
                                 <input 
                                     id="password" 
                                     type="password" 
                                     name="password" 
-                                    class="input-field-card w-full rounded-xl text-sm focus:outline-none"
+                                    class="w-full bg-[url('{{ asset('images/input-bg.png') }}')] bg-cover bg-center bg-no-repeat border-none text-white text-sm px-9 py-2.5 rounded-xl transition-all duration-300 focus:outline-none focus:shadow-[0_0_0_2px_rgba(255,255,255,0.3)] placeholder:text-white/70"
                                     placeholder="Masukkan password"
                                     required
                                 >
@@ -659,6 +332,7 @@
                             @enderror
                         </div>
 
+                        <!-- Remember Me -->
                         <div class="flex items-center pt-1">
                             <label for="remember_me" class="flex items-center gap-1.5 cursor-pointer">
                                 <input 
@@ -671,7 +345,8 @@
                             </label>
                         </div>
 
-                        <button type="submit" class="login-btn-card w-full rounded-xl transition-all duration-300 flex items-center justify-center gap-2 text-sm mt-2">
+                        <!-- Login Button -->
+                        <button type="submit" class="w-full h-[120px] bg-[url('{{ asset('images/button-bg.png') }}')] bg-cover bg-center bg-no-repeat border-none text-white font-semibold text-sm transition-transform duration-300 hover:translate-y-[-2px] hover:brightness-105 active:scale-95 flex items-center justify-center gap-2 mt-2 rounded-xl cursor-pointer">
                             <span>LOGIN</span>
                             <i class="fas fa-arrow-right text-xs"></i>
                         </button>
@@ -683,33 +358,37 @@
     
     <!-- ========== MOBILE VERSION ========== -->
     <div class="mobile-only" style="display: none;">
-        <div class="mobile-container">
-            <div class="mobile-card">
-                <div class="mobile-form-content">
-                    <!-- SPARK Title Mobile - HIDDEN -->
-                    <div class="mobile-spark-center-title" style="display: none;">SPARK</div>
+        <div class="min-h-screen flex items-center justify-center p-4 bg-[#0a0a1a]">
+            <div class="w-[380px] h-[545px] bg-[url('{{ asset('images/card-bg.jpg') }}')] bg-cover bg-center bg-no-repeat rounded-2xl relative shadow-none mx-auto">
+                <div class="absolute inset-0 p-24 flex flex-col">
+                    <!-- SPARK Title Mobile -->
+                    <div class="text-[2.8rem] font-normal text-white/95 tracking-[0.08em] leading-none text-center mb-6 hidden" style="font-family: 'Battlesbridge', sans-serif;">
+                        SPARK
+                    </div>
 
-                    <div class="mobile-info-box">
-                        <i class="fas fa-info-circle mobile-info-icon"></i>
-                        <p class="mobile-info-text">
-                            Login dengan <span>NIM</span> (Mahasiswa) atau <span>Email</span> (Mentor/Developer)
+                    <!-- Info Box Mobile -->
+                    <div class="bg-[url('{{ asset('images/info-bg.png') }}')] bg-cover bg-center bg-no-repeat rounded-xl px-4 py-2.5 mb-4 flex items-center gap-2.5">
+                        <i class="fas fa-info-circle text-[10px] text-white/80 flex-shrink-0"></i>
+                        <p class="text-[11px] text-white/90 leading-snug m-0">
+                            Login dengan <span class="font-semibold text-white">NIM</span> (Mahasiswa) atau <span class="font-semibold text-white">Email</span> (Mentor/Developer)
                         </p>
                     </div>
 
                     <form method="POST" action="{{ route('login') }}" class="flex flex-col gap-3">
                         @csrf
-                        <div class="mobile-form-group">
-                            <label for="login_mobile" class="mobile-label">
+                        <!-- NIM/Email Mobile -->
+                        <div class="mb-3">
+                            <label for="login_mobile" class="block text-xs font-semibold text-white/90 mb-1.5 drop-shadow-sm">
                                 NIM atau Email
                             </label>
-                            <div class="mobile-input-wrapper">
-                                <i class="fas fa-user mobile-input-icon"></i>
+                            <div class="relative">
+                                <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-white/70 text-xs z-10"></i>
                                 <input 
                                     id="login_mobile" 
                                     type="text" 
                                     name="login" 
                                     value="{{ old('login') }}"
-                                    class="mobile-input-field"
+                                    class="w-full bg-[url('{{ asset('images/input-bg.png') }}')] bg-cover bg-center bg-no-repeat border-none text-white text-sm px-9 py-2.5 rounded-xl transition-all duration-300 focus:outline-none focus:shadow-[0_0_0_2px_rgba(255,255,255,0.3)] placeholder:text-white/70"
                                     placeholder="Masukkan NIM atau email"
                                     required 
                                     autofocus
@@ -720,17 +399,18 @@
                             @enderror
                         </div>
 
-                        <div class="mobile-form-group">
-                            <label for="password_mobile" class="mobile-label">
+                        <!-- Password Mobile -->
+                        <div class="mb-3">
+                            <label for="password_mobile" class="block text-xs font-semibold text-white/90 mb-1.5 drop-shadow-sm">
                                 Password
                             </label>
-                            <div class="mobile-input-wrapper">
-                                <i class="fas fa-lock mobile-input-icon"></i>
+                            <div class="relative">
+                                <i class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-white/70 text-xs z-10"></i>
                                 <input 
                                     id="password_mobile" 
                                     type="password" 
                                     name="password" 
-                                    class="mobile-input-field"
+                                    class="w-full bg-[url('{{ asset('images/input-bg.png') }}')] bg-cover bg-center bg-no-repeat border-none text-white text-sm px-9 py-2.5 rounded-xl transition-all duration-300 focus:outline-none focus:shadow-[0_0_0_2px_rgba(255,255,255,0.3)] placeholder:text-white/70"
                                     placeholder="Masukkan password"
                                     required
                                 >
@@ -743,20 +423,23 @@
                             @enderror
                         </div>
 
+                        <!-- Remember Me Mobile -->
                         <div class="flex items-center pt-1">
-                            <label class="mobile-checkbox">
+                            <label for="remember_me_mobile" class="flex items-center gap-1.5 cursor-pointer">
                                 <input 
                                     id="remember_me_mobile" 
                                     type="checkbox" 
                                     name="remember"
+                                    class="w-3.5 h-3.5 rounded border-white/40 bg-white/10 text-white focus:ring-white/40 focus:ring-offset-0"
                                 >
-                                <span class="text-[11px] text-white/80">Ingat saya</span>
+                                <span class="text-[11px] text-white/80 drop-shadow-sm">Ingat saya</span>
                             </label>
                         </div>
 
-                        <button type="submit" class="mobile-login-btn mt-2">
+                        <!-- Login Button Mobile -->
+                        <button type="submit" class="w-full h-[120px] bg-[url('{{ asset('images/button-bg.png') }}')] bg-cover bg-center bg-no-repeat border-none text-white font-semibold text-sm transition-transform duration-300 hover:translate-y-[-2px] hover:brightness-105 active:scale-95 flex items-center justify-center gap-2 mt-2 rounded-xl cursor-pointer">
                             <span>LOGIN</span>
-                            <i class="fas fa-arrow-right text-xs ml-2"></i>
+                            <i class="fas fa-arrow-right text-xs"></i>
                         </button>
                     </form>
                 </div>

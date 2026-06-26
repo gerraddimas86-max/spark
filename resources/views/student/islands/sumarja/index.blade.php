@@ -159,9 +159,9 @@
                                     $diff = $challenge->difficulty ?? 'medium';
                                 @endphp
                                 <span class="text-[0.55rem] max-sm:text-[0.45rem] px-2 py-0.5 rounded-full font-medium tracking-[0.05em] uppercase flex-shrink-0 
-                                    @if($diff == 'easy') bg-green-400/30 text-green-400
-                                    @elseif($diff == 'medium') bg-yellow-400/30 text-yellow-400
-                                    @else bg-red-400/30 text-red-400 @endif">
+                                    @if($diff == 'easy') bg-green-400/30
+                                    @elseif($diff == 'medium') text-yellow-400
+                                    @else @endif">
                                     {{ $diff }}
                                 </span>
                             </div>

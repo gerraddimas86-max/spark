@@ -122,9 +122,9 @@
                         @endphp
                         <div class="flex items-center gap-3 flex-wrap">
                             <span class="text-[0.55rem] px-3 py-1 rounded-full font-medium tracking-[0.05em] uppercase 
-                                @if($diff == 'easy') bg-green-400/30 text-green-400
-                                @elseif($diff == 'medium') bg-yellow-400/30 text-yellow-400
-                                @else bg-red-400/30 text-red-400 @endif">
+                                @if($diff == 'easy') text-green-400
+                                @elseif($diff == 'medium') bg-yellow-400/30
+                                @else @endif">
                                 {{ $diff }}
                             </span>
                             <span class="text-[0.7rem] text-white/50">

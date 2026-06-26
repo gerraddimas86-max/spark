@@ -15,61 +15,61 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
-        // Data 8 pet dengan 3 dialog masing-masing - TEMA BAJAK LAUT & PKKMB
+        // Data 8 pet dengan dialog yang nyambung satu sama lain - TEMA BAJAK LAUT & PKKMB
+        // Setiap pet berbicara bergantian membentuk cerita yang utuh
         $petDialogs = [
-            'Phantom' => [
-                "Ahoy! Aku Phantom, hantu bajak laut penjaga SPARK! Siap berlayar di PKKMB?",
-                "Hai hai! Jangan takut padaku, aku di sini temani petualangan PKKMB-mu!",
-                "Selamat datang di kapal SPARK! Aku Phantom, navigator handal untuk mahasiswa baru!"
+            'Aragita' => [
+                "Ahoy, para bajak laut muda! Aku Aragita, gurita dengan 8 tangan siap membantu! Sebelum kita berlayar, ada yang ingin kami sampaikan...",
+                "Halo lagi! Aku Aragita, gurita penjaga SPARK. Mari kita sambut para kapten baru dengan semangat PKKMB!",
+                "Selamat datang di kapal SPARK! Aku Aragita, navigator setia. Sudah siapkah kau untuk petualangan ini?"
             ],
-            'Captain' => [
-                "Wik-wik! Aku Kapten Captain, kapten bajak laut SPARK! Siap tempur PKKMB?",
-                "Halo sobat! Ayo kita jelajahi lautan ilmu Fasilkom UNSRI bersama!",
-                "Kenaikan semangat! Aku Captain, siap pimpin kamu di PKKMB!"
+            'Deshark' => [
+                "Salam dari kedalaman! Aku Deshark, hiu penjelajah SPARK! Kami semua dari berbagai penjuru laut berkumpul di sini...",
+                "Berenanglah bersama kami! Aku Deshark, hiu pemberani. Dengarkan cerita dari kami semua tentang PKKMB!",
+                "Hai para perenang handal! Aku Deshark, di sini bersama semua teman-temanku untuk menyambut kalian!"
             ],
-            'Finley' => [
-                "Salam dari kedalaman laut! Aku Finley, hiu bajak laut SPARK!",
-                "Berenanglah bersama ku menuju kesuksesan PKKMB Fasilkom!",
-                "Mahasiswa baru yang berani seperti hiu pasti sukses! Ayo kita berlayar!"
+            'Yuyuu' => [
+                "Hiii... Aku Yuyuu, hantu laut penjaga gerbang SPARK! Sebelum kita berlayar, ada yang ingin kami sampaikan...",
+                "Halo lagi! Aku Yuyuu, hantu penjaga SPARK. Mari kita sambut para kapten baru dengan semangat PKKMB!",
+                "Selamat datang di kapal SPARK! Aku Yuyuu, navigator setia. Sudah siapkah kau untuk petualangan ini?"
             ],
-            'Octavius' => [
-                "Ahoy! Aku Octavius, gurita bajak laut dengan 8 tangan siap membantu!",
-                "Butuh bantuan di PKKMB? 8 tanganku siap membantumu!",
-                "Selamat datang di SPARK! Aku Octavius, siap pegang banyak ilmu untukmu!"
+            'Gerriz' => [
+                "Klik klik! Aku Gerriz, kepiting penjaga pantai SPARK! Kami semua menjaga semangat PKKMB tetap menyala...",
+                "Jepitannya kuat! Aku Gerriz, bersama para pet lain kami akan menjagamu di setiap langkah PKKMB!",
+                "Berani seperti kepiting! Aku Gerriz, dan kami semua di sini adalah pelindung mahasiswa baru Fasilkom!"
             ],
-            'Draco' => [
-                "Grrr... Aku Draco, naga bajak laut pelindung SPARK! Siap PKKMB?",
-                "Apiku membara untuk menyambut mahasiswa baru Fasilkom UNSRI!",
-                "Berani seperti naga, raih mimpimu di PKKMB bersama Draco!"
+            'Wiboo' => [
+                "Wik-wik! Aku Wiboo, burung petualang SPARK! Perhatikan baik-baik pesan dari kami semua ya!",
+                "Halo sobat! Aku Wiboo, komandan burung SPARK. Kami semua sudah berkumpul untuk menyambut kalian!",
+                "Terbang tinggi! Aku Wiboo, siap memimpin kalian memahami setiap pesan dari kami para pet!"
             ],
-            'Ember' => [
-                "Ceriah! Aku Ember, burung api bajak laut SPARK!",
-                "Terbang tinggi di PKKMB Fasilkom UNSRI, aku temani setiap langkahmu!",
-                "Semangatmu menyala seperti apiku! Ayo jelajahi PKKMB bersama!"
+            'Ridly' => [
+                "Hiii! Aku Ridly, kuda laut yang lincah! Perhatikan baik-baik, kami semua punya pesan untukmu...",
+                "Berenang lincah! Aku Ridly, bersama teman-teman lain kami akan menerangi perjalanan PKKMB-mu!",
+                "Semangatmu mengalir! Aku Ridly, dan kami semua di sini siap menyambut kalian dengan hangat!"
             ],
-            'Shelly' => [
-                "Pelan tapi pasti! Aku Shelly, kura-kura bajak laut SPARK!",
-                "Perjalanan PKKMB itu panjang, nikmati setiap langkahnya bersamaku!",
-                "Konsisten seperti kura-kura, pasti sukses di Fasilkom UNSRI!"
+            'Zarsy' => [
+                "Pelan tapi pasti! Aku Zarsy, kura-kura bijak SPARK. Kami semua ingin mengatakan satu hal kepada kalian...",
+                "Perjalanan panjang menanti! Aku Zarsy, bersama yang lain kami akan menemani setiap langkahmu di PKKMB!",
+                "Konsisten seperti kura-kura! Aku Zarsy, dan kami semua adalah teman setia mahasiswa baru Fasilkom!"
             ],
-            'Wally' => [
-                "Blub blub! Aku Wally, paus bajak laut ramah SPARK!",
-                "Selamat berlayar di lautan ilmu Fasilkom UNSRI bersama Wally!",
-                "Halo mahasiswa baru! Aku Wally, siap temani PKKMB-mu!"
+            'Thala' => [
+                "Blub blub! Aku Thala, ikan buntal yang selalu ceria! Kami semua sudah siap menemanimu di PKKMB...",
+                "Mengembang seperti buntal! Aku Thala, bersama yang lain kami akan membimbingmu dengan penuh semangat!",
+                "Selamat datang di SPARK! Aku Thala, dan kami semua di sini adalah keluarga bajak laut PKKMB!"
             ],
         ];
         
-        // Data 8 pet (stage BABY)
-        // Untuk Ghost, menggunakan ghost.png (bukan ghost_baby.png) agar animasi kedip bekerja
+        // Data 8 pet (stage DEWASA) - sesuai dengan folder images/pets
         $allPets = [
-            ['name' => 'Phantom', 'type' => 'ghost', 'image' => 'ghost/ghost.png', 'icon' => 'fa-ghost'],
-            ['name' => 'Captain', 'type' => 'parrot', 'image' => 'parrot/parrot_baby.png', 'icon' => 'fa-dove'],
-            ['name' => 'Finley', 'type' => 'shark', 'image' => 'shark/shark_baby.png', 'icon' => 'fa-fish'],
-            ['name' => 'Octavius', 'type' => 'octopus', 'image' => 'octopus/octopus_baby.png', 'icon' => 'fa-fish'],
-            ['name' => 'Draco', 'type' => 'dragon', 'image' => 'dragon/dragon_baby.png', 'icon' => 'fa-dragon'],
-            ['name' => 'Ember', 'type' => 'phoenix', 'image' => 'phoenix/phoenix_baby.png', 'icon' => 'fa-fire'],
-            ['name' => 'Shelly', 'type' => 'turtle', 'image' => 'turtle/turtle_baby.png', 'icon' => 'fa-fish'],
-            ['name' => 'Wally', 'type' => 'whale', 'image' => 'whale/whale_baby.png', 'icon' => 'fa-water'],
+            ['name' => 'Aragita', 'type' => 'octopus', 'image' => 'gurita/dewasa/gurita.png', 'icon' => 'fa-octopus-deploy'],
+            ['name' => 'Deshark', 'type' => 'shark', 'image' => 'hiu/dewasa/hiu.png', 'icon' => 'fa-shark'],
+            ['name' => 'Yuyuu', 'type' => 'ghost', 'image' => 'hantu/dewasa/hantu.png', 'icon' => 'fa-ghost'],
+            ['name' => 'Gerriz', 'type' => 'crab', 'image' => 'kepiting/dewasa/kepiting.png', 'icon' => 'fa-crab'],
+            ['name' => 'Wiboo', 'type' => 'parrot', 'image' => 'burung-beo/dewasa/burung-beo.png', 'icon' => 'fa-crow'],
+            ['name' => 'Ridly', 'type' => 'seahorse', 'image' => 'kuda-laut/dewasa/kuda-laut.png', 'icon' => 'fa-horse-head'],
+            ['name' => 'Zarsy', 'type' => 'turtle', 'image' => 'kura-kura/dewasa/kura-kura.png', 'icon' => 'fa-turtle'],
+            ['name' => 'Thala', 'type' => 'pufferfish', 'image' => 'ikan-buntal/dewasa/ikan-buntal.png', 'icon' => 'fa-fish'],
         ];
         
         // Pilih pet random
@@ -116,7 +116,7 @@ class AuthenticatedSessionController extends Controller
             return match($roleName) {
                 'developer' => redirect()->intended(route('developer.dashboard')),
                 'mentor' => redirect()->intended(route('mentor.dashboard')),
-                'mahasiswa' => redirect()->intended(route('student.hero')), // LANGSUNG KE HERO
+                'mahasiswa' => redirect()->intended(route('student.hero')),
                 default => redirect('/'),
             };
         }
